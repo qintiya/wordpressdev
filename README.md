@@ -2,47 +2,30 @@
 
 Starter lokal/production untuk WordPress headless: WordPress + MariaDB dengan Docker Compose, plugin `WordPressDev Core`, tema custom, Next.js, dan Caddy reverse proxy dengan HTTPS otomatis.
 
+Dokumentasi tambahan: [opsi hosting](HOSTING.md), [Python deploy/backup/migrasi dan aplikasi Django](PYTHON_DJANGO.md), serta [dokumentasi frontend](docs/frontends.mdx).
+
 ## Domain kustom
 
-Konfigurasi default memakai:
+Konfigurasi default memakai WordPress/CMS `https://wp.awdev.eu.org` dan frontend `https://awdev.eu.org`. Ubah `WORDPRESS_DOMAIN` dan `FRONTEND_DOMAIN` di `.env` untuk memakai hostname milik Anda. Arahkan DNS ke server Docker dan buka port TCP 80/443 agar Caddy dapat mengurus HTTPS.
 
-- WordPress/CMS/admin: `https://wp.awdev.eu.org`
-- Frontend headless: `https://awdev.eu.org`
-
-Anda bisa mengganti keduanya dengan domain atau subdomain milik Anda melalui `.env`. Contoh: `WORDPRESS_DOMAIN=wordpress.example.com` dan `FRONTEND_DOMAIN=www.example.com`.
-
-### Prasyarat domain/server
-
-1. Pastikan Anda mengelola domain tersebut dan buat DNS `A` record untuk kedua hostname menuju IP publik server Docker. Tambahkan `AAAA` hanya jika server benar-benar dapat diakses melalui IPv6.
-2. Buka/forward port TCP `80` dan `443` (serta UDP `443` opsional untuk HTTP/3) ke server. Pastikan firewall atau proxy DNS tidak menghalangi validasi sertifikat.
-3. Siapkan Docker Engine dan Compose v2 pada server.
-4. Salin `.env.example` menjadi `.env`, ubah password MariaDB menjadi rahasia kuat, dan atur hostname yang benar.
-5. Jalankan `docker compose up -d --build`. Caddy akan meminta dan memperbarui sertifikat TLS otomatis setelah DNS mengarah ke server.
-
-Jangan mengandalkan domain contoh sebelum memastikan DNS dan kepemilikannya. Saya tidak mengubah DNS atau meng-host server dari repo ini; pengaturan DNS dilakukan di penyedia domain Anda.
-
-## Jalankan lokal
+## Mulai
 
 ```bash
 cp .env.example .env
-# Untuk lokal, arahkan domain ke 127.0.0.1 di file hosts atau ubah domain dan gunakan reverse proxy lokal.
+# Ubah kredensial database sebelum penggunaan server.
 docker compose up --build
 ```
 
-Di server, buka frontend pada domain yang diatur dan selesaikan instalasi WordPress melalui `https://<WORDPRESS_DOMAIN>/wp-admin/`. Aktifkan plugin **WordPressDev Core** dan tema **WordPressDev Default**. Port debug `8080` dan `3000` hanya di-bind ke loopback host.
+Buka domain frontend dan selesaikan instalasi WordPress melalui `https://<WORDPRESS_DOMAIN>/wp-admin/`. Aktifkan plugin **WordPressDev Core** dan tema **WordPressDev Default**. Untuk penggunaan lokal, backend WordPress dan frontend hanya terikat ke loopback host pada port 8080 dan 3000.
 
-REST API:
+REST API: `https://<WORDPRESS_DOMAIN>/wp-json/wp/v2/posts` dan `https://<WORDPRESS_DOMAIN>/wp-json/wp/v2/projects`.
 
-- `https://<WORDPRESS_DOMAIN>/wp-json/wp/v2/posts`
-- `https://<WORDPRESS_DOMAIN>/wp-json/wp/v2/projects`
+## Python dan Django
 
-## Isi repo
+Jalankan `python3 scripts/deploy.py`, `python3 scripts/backup.py`, atau `python3 scripts/migrate.py` untuk operasi deployment, backup, dan ekspor migrasi. Lihat [PYTHON_DJANGO.md](PYTHON_DJANGO.md) untuk petunjuk dan batasan.
 
-- `docker-compose.yml`, `Caddyfile`, `.env.example`
-- `wordpress/plugins/wordpressdev-core/` — plugin CPT dan admin
-- `wordpress/themes/wordpressdev-default/` — tema klasik
-- `frontend/` — frontend Next.js
+Django tersedia sebagai aplikasi opsional terpisah: `docker compose --profile django up --build -d`. Ia memiliki admin dan model Projects sendiri; belum tersinkron otomatis dengan WordPress.
 
-## Keamanan produksi
+## Produksi
 
-Gunakan kredensial kuat dan unik, simpan `.env` di server saja, pin image ke versi/digest yang telah diuji, aktifkan backup database dan uploads, perbarui image secara terencana, dan gunakan HTTPS. Jangan commit secret ke Git.
+Gunakan kredensial kuat, `DJANGO_SECRET_KEY` acak bila mengaktifkan Django, simpan `.env` hanya di server, pin image ke versi yang diuji, aktifkan backup off-site, dan uji pemulihan. Jangan commit secret ke Git.

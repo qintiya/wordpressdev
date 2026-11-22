@@ -69,8 +69,24 @@ services:
       - caddy_data:/data
       - caddy_config:/config
 
+  django:
+    profiles: ["django"]
+    build:
+      context: ./django_app
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${DJANGO_PORT:-8000}:8000"
+    environment:
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:-unsafe-dev-key-change-me}
+      DJANGO_DEBUG: ${DJANGO_DEBUG:-false}
+      DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS:-localhost,127.0.0.1}
+      DJANGO_DB_PATH: /data/db.sqlite3
+    volumes:
+      - django_data:/data
+
 volumes:
   db_data:
   wordpress_data:
   caddy_data:
   caddy_config:
+  django_data:
