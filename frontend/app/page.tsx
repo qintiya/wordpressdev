@@ -1,9 +1,10 @@
 import Link from 'next/link';
 
-type WpPost = { id: number; date: string; slug: string; link: string; title: { rendered: string }; excerpt: { rendered: string } };
-type WpProject = { id: number; slug: string; title: { rendered: string }; excerpt: { rendered: string } };
+type WpPost = { id: number; date: string; slug: string; title: { rendered: string }; excerpt: { rendered: string } };
+type WpProject = { id: number; title: { rendered: string }; excerpt: { rendered: string } };
 
-const api = (process.env.WORDPRESS_API_URL || 'http://localhost:8080/wp-json/wp/v2').replace(/\\/$/, '');
+const api = (process.env.WORDPRESS_API_URL || 'http://localhost:8080/wp-json/wp/v2').replace(/\/$/, '');
+const adminUrl = process.env.NEXT_PUBLIC_WORDPRESS_ADMIN_URL || 'http://localhost:8080';
 
 async function getItems<T>(type: 'posts' | 'projects'): Promise<T[]> {
   try {
@@ -27,7 +28,7 @@ export default async function HomePage() {
         <p className="eyebrow">WORDPRESSDEV · HEADLESS STARTER</p>
         <h1>One content hub.<br /><span>Any frontend.</span></h1>
         <p className="intro">A clean Next.js front end powered by your WordPress content and REST API.</p>
-        <a className="button" href="http://localhost:8080/wp-admin/">Open WordPress admin <span aria-hidden="true">↗</span></a>
+        <a className="button" href={`${adminUrl.replace(/\/$/, '')}/wp-admin/`}>Open WordPress admin <span aria-hidden="true">↗</span></a>
       </header>
       <section aria-labelledby="projects-title">
         <div className="section-heading"><div><p className="eyebrow">SELECTED WORK</p><h2 id="projects-title">Projects</h2></div><code>/wp-json/wp/v2/projects</code></div>

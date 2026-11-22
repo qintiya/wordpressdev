@@ -1,0 +1,9 @@
+{$WORDPRESS_DOMAIN} {
+	encode zstd gzip
+	reverse_proxy wordpress:80
+}
+
+{$FRONTEND_DOMAIN} {
+	encode zstd gzip
+	reverse_proxy frontend:3000
+}

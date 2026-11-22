@@ -22,12 +22,17 @@ services:
       db:
         condition: service_healthy
     ports:
-      - "${WORDPRESS_PORT:-8080}:80"
+      - "127.0.0.1:${WORDPRESS_PORT:-8080}:80"
     environment:
       WORDPRESS_DB_HOST: db:3306
       WORDPRESS_DB_NAME: ${MARIADB_DATABASE:-wordpress}
       WORDPRESS_DB_USER: ${MARIADB_USER:-wordpress}
       WORDPRESS_DB_PASSWORD: ${MARIADB_PASSWORD:-change-this-local-password}
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_HOME', 'https://${WORDPRESS_DOMAIN:-wp.awdev.eu.org}');
+        define('WP_SITEURL', 'https://${WORDPRESS_DOMAIN:-wp.awdev.eu.org}');
+        define('FORCE_SSL_ADMIN', true);
+        if (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strpos($_SERVER['HTTP_X_FORWARDED_PROTO'], 'https') !== false) { $_SERVER['HTTPS'] = 'on'; }
     volumes:
       - wordpress_data:/var/www/html
       - ./wordpress/plugins/wordpressdev-core:/var/www/html/wp-content/plugins/wordpressdev-core:ro
@@ -36,14 +41,36 @@ services:
   frontend:
     build:
       context: ./frontend
+      args:
+        NEXT_PUBLIC_WORDPRESS_ADMIN_URL: https://${WORDPRESS_DOMAIN:-wp.awdev.eu.org}
     restart: unless-stopped
     depends_on:
       - wordpress
     ports:
-      - "${FRONTEND_PORT:-3000}:3000"
+      - "127.0.0.1:${FRONTEND_PORT:-3000}:3000"
     environment:
       WORDPRESS_API_URL: http://wordpress/wp-json/wp/v2
+
+  caddy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    depends_on:
+      - wordpress
+      - frontend
+    ports:
+      - "80:80"
+      - "443:443"
+      - "443:443/udp"
+    environment:
+      WORDPRESS_DOMAIN: ${WORDPRESS_DOMAIN:-wp.awdev.eu.org}
+      FRONTEND_DOMAIN: ${FRONTEND_DOMAIN:-awdev.eu.org}
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
 
 volumes:
   db_data:
   wordpress_data:
+  caddy_data:
+  caddy_config:

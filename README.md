@@ -1,42 +1,48 @@
 # WordPress Headless Starter
 
-Starter lokal untuk WordPress headless: WordPress + MariaDB dengan Docker Compose, plugin `WordPressDev Core` (Custom Post Type **Projects**, REST API, dan halaman admin khusus), serta frontend Next.js.
+Starter lokal/production untuk WordPress headless: WordPress + MariaDB dengan Docker Compose, plugin `WordPressDev Core`, tema custom, Next.js, dan Caddy reverse proxy dengan HTTPS otomatis.
 
-## Persyaratan
+## Domain kustom
 
-- Docker Desktop atau Docker Engine dengan Docker Compose v2
-- Port `3000` dan `8080` tersedia
+Konfigurasi default memakai:
 
-## Mulai
+- WordPress/CMS/admin: `https://wp.awdev.eu.org`
+- Frontend headless: `https://awdev.eu.org`
+
+Anda bisa mengganti keduanya dengan domain atau subdomain milik Anda melalui `.env`. Contoh: `WORDPRESS_DOMAIN=wordpress.example.com` dan `FRONTEND_DOMAIN=www.example.com`.
+
+### Prasyarat domain/server
+
+1. Pastikan Anda mengelola domain tersebut dan buat DNS `A` record untuk kedua hostname menuju IP publik server Docker. Tambahkan `AAAA` hanya jika server benar-benar dapat diakses melalui IPv6.
+2. Buka/forward port TCP `80` dan `443` (serta UDP `443` opsional untuk HTTP/3) ke server. Pastikan firewall atau proxy DNS tidak menghalangi validasi sertifikat.
+3. Siapkan Docker Engine dan Compose v2 pada server.
+4. Salin `.env.example` menjadi `.env`, ubah password MariaDB menjadi rahasia kuat, dan atur hostname yang benar.
+5. Jalankan `docker compose up -d --build`. Caddy akan meminta dan memperbarui sertifikat TLS otomatis setelah DNS mengarah ke server.
+
+Jangan mengandalkan domain contoh sebelum memastikan DNS dan kepemilikannya. Saya tidak mengubah DNS atau meng-host server dari repo ini; pengaturan DNS dilakukan di penyedia domain Anda.
+
+## Jalankan lokal
 
 ```bash
 cp .env.example .env
+# Untuk lokal, arahkan domain ke 127.0.0.1 di file hosts atau ubah domain dan gunakan reverse proxy lokal.
 docker compose up --build
 ```
 
-Buka `http://localhost:8080` dan selesaikan instalasi WordPress. Aktifkan **WordPressDev Core** di **Plugins → Installed Plugins**. Frontend tersedia di `http://localhost:3000`.
+Di server, buka frontend pada domain yang diatur dan selesaikan instalasi WordPress melalui `https://<WORDPRESS_DOMAIN>/wp-admin/`. Aktifkan plugin **WordPressDev Core** dan tema **WordPressDev Default**. Port debug `8080` dan `3000` hanya di-bind ke loopback host.
 
-Plugin dipasang dari folder lokal melalui bind mount, sehingga perubahan plugin langsung terlihat di WordPress. Buat beberapa Posts dan Projects untuk mengisi frontend. REST API tersedia di:
+REST API:
 
-- `http://localhost:8080/wp-json/wp/v2/posts`
-- `http://localhost:8080/wp-json/wp/v2/projects`
+- `https://<WORDPRESS_DOMAIN>/wp-json/wp/v2/posts`
+- `https://<WORDPRESS_DOMAIN>/wp-json/wp/v2/projects`
 
-## Konfigurasi
+## Isi repo
 
-Salin `.env.example` ke `.env` lalu ubah kredensial database sebelum digunakan. `.env` tidak dilacak Git. Jangan gunakan konfigurasi contoh atau server development ini di produksi.
+- `docker-compose.yml`, `Caddyfile`, `.env.example`
+- `wordpress/plugins/wordpressdev-core/` — plugin CPT dan admin
+- `wordpress/themes/wordpressdev-default/` — tema klasik
+- `frontend/` — frontend Next.js
 
-Frontend membaca `WORDPRESS_API_URL` (URL internal Docker, default `http://wordpress/wp-json/wp/v2`). Untuk mengarahkannya ke WordPress lain, atur variabel tersebut di `docker-compose.yml`, lalu rebuild frontend.
+## Keamanan produksi
 
-## Struktur
-
-```text
-.
-├── docker-compose.yml
-├── .env.example
-├── wordpress/plugins/wordpressdev-core/  # Plugin CPT dan admin
-└── frontend/                             # Next.js headless frontend
-```
-
-## Catatan produksi
-
-Gunakan HTTPS, kredensial kuat dan unik, secret yang dikelola di luar Git, image yang dipin ke versi/ digest yang telah diuji, backup database dan uploads, serta web server/reverse proxy yang sesuai. Batasi akses admin WordPress. Endpoint REST untuk konten publik memang terbuka; jangan menaruh data rahasia dalam post publik.
+Gunakan kredensial kuat dan unik, simpan `.env` di server saja, pin image ke versi/digest yang telah diuji, aktifkan backup database dan uploads, perbarui image secara terencana, dan gunakan HTTPS. Jangan commit secret ke Git.
