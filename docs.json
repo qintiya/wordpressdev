@@ -1,0 +1,23 @@
+{
+  "$schema": "https://mintlify.com/docs.json",
+  "name": "WordPressDev",
+  "theme": "mint",
+  "colors": {
+    "primary": "#315c45",
+    " light": "#c9f36b",
+    "dark": "#172321"
+  },
+  "favicon": "/favicon.svg",
+  "navigation": {
+    "groups": [
+      {
+        "group": "Getting started",
+        "pages": ["index", "deployment"]
+      },
+      {
+        "group": "Headless frontends",
+        "pages": ["frontends"]
+      }
+    ]
+  }
+}

@@ -1,0 +1,26 @@
+---
+title: Frontend integrations
+description: WordPress REST API integration options
+---
+
+The CMS exposes published posts at `/wp-json/wp/v2/posts` and custom Projects at `/wp-json/wp/v2/projects`. Use the CMS hostname, not the Docker-only hostname `wordpress`, in frontend deployments outside the Docker network.
+
+## Next.js (included)
+
+The included app is in `frontend/`. It fetches posts and projects from `WORDPRESS_API_URL`. For a hosted frontend, set this to `https://<cms-hostname>/wp-json/wp/v2` and redeploy.
+
+## Gatsby
+
+Create a Gatsby app and fetch the public WordPress REST endpoints with Gatsby's page queries or build-time data source. Use `https://<cms-hostname>/wp-json/wp/v2/posts` and `/projects`. For incremental or webhook-driven builds, configure a build hook in your hosting provider; do not expose credentials in client-side code.
+
+## Vue
+
+Create a Vue app and request the public endpoints with `fetch` or your HTTP client. For a static SPA, configure the CMS API origin as a public build-time variable and permit the frontend origin in WordPress CORS if the CMS is on a different origin. CORS is not an authentication mechanism.
+
+## Angular
+
+Use Angular `HttpClient` in a service to request the public REST endpoints. Configure the API base URL through Angular environment configuration. If the frontend and CMS use different origins, configure narrowly scoped CORS for the frontend domain.
+
+## Mintlify documentation
+
+The repository includes a Mintlify documentation site configured by `docs.json` and the `docs/` pages. Connect the repository to Mintlify and publish the docs from the repository root. This is documentation hosting; it does not replace the Next.js website or WordPress CMS.

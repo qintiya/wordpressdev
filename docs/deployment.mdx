@@ -1,0 +1,26 @@
+---
+title: Deployment options
+description: Deploy the headless frontend and WordPress CMS
+---
+
+## Architecture
+
+WordPress and MariaDB are stateful services and should run on a server or managed WordPress host. Deploy the public frontend separately if desired. Set the frontend's `WORDPRESS_API_URL` to the public WordPress REST API URL, for example `https://wp.example.com/wp-json/wp/v2`.
+
+Do not expose database credentials or WordPress Application Passwords in public frontend variables. Public REST reads for published content do not need credentials. Admin/editor actions must be handled through a secure server-side backend.
+
+## Netlify (Next.js)
+
+The repository includes `netlify.toml`, configured to use the `frontend/` directory and the Next.js adapter. Import the Git repository into Netlify, set the environment variable `WORDPRESS_API_URL` to the public WordPress REST API base URL, then deploy. Set `NEXT_PUBLIC_WORDPRESS_ADMIN_URL` to the public CMS origin if using the admin link in the frontend.
+
+Keep the WordPress backend reachable over HTTPS from Netlify's build/runtime environment. Never set secrets with a `NEXT_PUBLIC_` prefix.
+
+## Cloudflare Workers (Next.js)
+
+Use the OpenNext Cloudflare adapter to run Next.js on Workers. Follow the adapter's current setup instructions for the installed Next.js version, generate its Wrangler configuration, and test with Wrangler locally before deployment. Worker compatibility and supported Next.js features can change; do not deploy the regular Node.js Docker image as a Worker.
+
+Configure the Worker environment with the public WordPress REST API URL. Bind the desired custom domain to the Worker through Cloudflare and keep WordPress hosted separately. The WordPress CMS needs persistent storage and is not deployed as a stateless Worker.
+
+## Custom domains
+
+Point the frontend hostname to Netlify or bind it to a Cloudflare Worker. Point the CMS hostname to the WordPress server. Configure HTTPS at each provider, then set the frontend API URL to the CMS REST API origin.
