@@ -1,0 +1,59 @@
+---
+title: Cloud platform integrations
+description: Connect WordPress to Firebase, Cloudflare, AWS, and Netlify
+---
+
+This project uses WordPress as the content management system (CMS) and Next.js as its included frontend. The frontend reads published content from the WordPress REST API. Hosting the frontend on a cloud provider does not move or automatically migrate WordPress or its database.
+
+## Before you deploy
+
+1. Deploy WordPress on a PHP-compatible host with persistent database and uploads storage. Keep it reachable over HTTPS.
+2. Confirm these public REST endpoints work without credentials:
+   - `https://<cms-domain>/wp-json/wp/v2/posts`
+   - `https://<cms-domain>/wp-json/wp/v2/projects`
+3. Set `WORDPRESS_API_URL` to `https://<cms-domain>/wp-json/wp/v2` in the frontend provider's environment settings. Redeploy after changing build-time variables.
+4. If browser-side requests are made across origins, configure WordPress/server CORS to allow only the frontend origin. CORS is not authentication.
+5. Never put database passwords, WordPress Application Passwords, service-account keys, or other private credentials in `NEXT_PUBLIC_*` variables or browser code.
+
+## Firebase
+
+Choose a Firebase product based on the app's rendering needs:
+
+- **Firebase App Hosting** is the Firebase option to investigate for a server-rendered Next.js app. Connect the repository, configure the app's root/build settings for `frontend/` as supported by the current Firebase workflow, and set `WORDPRESS_API_URL` in the App Hosting environment configuration.
+- **Firebase Hosting** is appropriate for a static export. The included app uses server-side fetching, so a plain static-hosting deployment may require adapting the app to static generation or adding a server/runtime. Verify the framework and rendering features supported by the Firebase product before choosing this path.
+
+Use a Firebase project you control and configure a custom domain and TLS in its console. Firebase Authentication is optional; it does not replace WordPress authorization. Do not send WordPress admin credentials to clients.
+
+## Cloudflare
+
+For the included Next.js application, use the currently supported OpenNext Cloudflare adapter and its Wrangler workflow. Follow the adapter's compatibility instructions for the Next.js version in `frontend/package.json`; test with Wrangler before publishing. The regular Node.js Docker image is not itself a Cloudflare Worker deployment bundle.
+
+Set `WORDPRESS_API_URL` in the Worker environment. Attach the frontend hostname to the Worker through Cloudflare and configure TLS there. Keep WordPress and MariaDB on a PHP/database host with persistent storage; Workers do not replace those stateful services.
+
+## Amazon Web Services (AWS)
+
+Two common patterns are:
+
+- **AWS Amplify Hosting** for deploying the Next.js frontend from this Git repository. Configure the app's frontend root as `frontend/` according to Amplify's current Next.js support, set `WORDPRESS_API_URL`, and add the frontend custom domain in Amplify.
+- **Container-based hosting** such as Amazon ECS for running the existing Next.js Docker container. Put an HTTPS load balancer in front, store runtime secrets in AWS's secret-management service, and configure health checks and logs. WordPress can remain on a separate PHP-compatible host or be deployed as its own persistent container service with managed database and file storage.
+
+Do not expose a database directly to the public internet. Restrict network access between application and database services, back up persistent data, and use IAM roles rather than embedding AWS keys in the application.
+
+## Netlify
+
+The repository has a `netlify.toml` file for the Next.js frontend. Import the repository into Netlify, verify the configured base directory/build settings, and set `WORDPRESS_API_URL` to the public WordPress REST API base URL in the site's environment variables. Set `NEXT_PUBLIC_WORDPRESS_ADMIN_URL` only to the public CMS origin if the frontend uses its admin link; this value is public, not a secret.
+
+Add the frontend domain in Netlify and complete its DNS/TLS instructions. Ensure the WordPress origin is reachable from Netlify's build/runtime and browser as required. If browser requests cross origins, allow only the deployed frontend origin in CORS.
+
+## Domain layout example
+
+A typical setup uses separate hostnames:
+
+- Frontend: `https://www.example.com` hosted on Firebase, Cloudflare, AWS, or Netlify.
+- WordPress CMS: `https://wp.example.com` hosted on a PHP-compatible platform.
+
+Point each DNS record to the platform responsible for that hostname. Configure the frontend API base as `https://wp.example.com/wp-json/wp/v2`. DNS and provider account changes must be made in the respective provider consoles; these docs do not create cloud resources or deploy the app automatically.
+
+## Scope
+
+These are deployment guides, not provider provisioning automation. The repository includes the Next.js app and provider-oriented instructions; it does not include Firebase, AWS, or Cloudflare credentials/configuration, nor separate frontend applications for each provider. Hosting provider features and framework adapters can change, so confirm current platform support before production deployment.

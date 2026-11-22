@@ -4,7 +4,7 @@
   "theme": "mint",
   "colors": {
     "primary": "#315c45",
-    " light": "#c9f36b",
+    "light": "#c9f36b",
     "dark": "#172321"
   },
   "favicon": "/favicon.svg",
@@ -16,7 +16,7 @@
       },
       {
         "group": "Headless frontends",
-        "pages": ["frontends"]
+        "pages": ["frontends", "cloud-integrations"]
       }
     ]
   }
