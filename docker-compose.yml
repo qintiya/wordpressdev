@@ -1,0 +1,48 @@
+services:
+  db:
+    image: mariadb:11.4
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: ${MARIADB_DATABASE:-wordpress}
+      MARIADB_USER: ${MARIADB_USER:-wordpress}
+      MARIADB_PASSWORD: ${MARIADB_PASSWORD:-change-this-local-password}
+      MARIADB_ROOT_PASSWORD: ${MARIADB_ROOT_PASSWORD:-change-this-local-root-password}
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  wordpress:
+    image: wordpress:php8.3-apache
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "${WORDPRESS_PORT:-8080}:80"
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_NAME: ${MARIADB_DATABASE:-wordpress}
+      WORDPRESS_DB_USER: ${MARIADB_USER:-wordpress}
+      WORDPRESS_DB_PASSWORD: ${MARIADB_PASSWORD:-change-this-local-password}
+    volumes:
+      - wordpress_data:/var/www/html
+      - ./wordpress/plugins/wordpressdev-core:/var/www/html/wp-content/plugins/wordpressdev-core:ro
+
+  frontend:
+    build:
+      context: ./frontend
+    restart: unless-stopped
+    depends_on:
+      - wordpress
+    ports:
+      - "${FRONTEND_PORT:-3000}:3000"
+    environment:
+      WORDPRESS_API_URL: http://wordpress/wp-json/wp/v2
+
+volumes:
+  db_data:
+  wordpress_data:
