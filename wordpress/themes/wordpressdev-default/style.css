@@ -1,0 +1,37 @@
+/*
+Theme Name: WordPressDev Default
+Theme URI: https://github.com/qintiya/wordpressdev
+Author: WordPressDev
+Author URI: https://github.com/qintiya/wordpressdev
+Description: Lightweight classic theme starter for the WordPressDev headless CMS. The Next.js app is the public-facing frontend; this theme provides a usable WordPress fallback and admin preview.
+Version: 1.0.0
+Requires at least: 6.4
+Requires PHP: 8.0
+License: GPL-3.0-or-later
+License URI: https://www.gnu.org/licenses/gpl-3.0.html
+Text Domain: wordpressdev-default
+Tags: blog, custom-logo, featured-images, translation-ready
+*/
+
+:root { --wpdev-ink: #172321; --wpdev-muted: #64716e; --wpdev-line: #dce4df; --wpdev-bg: #f7f8f4; --wpdev-accent: #c9f36b; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--wpdev-bg); color: var(--wpdev-ink); font-family: Arial, Helvetica, sans-serif; line-height: 1.65; }
+a { color: inherit; }
+.site-header, .site-main, .site-footer { width: min(100% - 40px, 1040px); margin-inline: auto; }
+.site-header { display: flex; justify-content: space-between; align-items: center; gap: 24px; padding: 22px 0; border-bottom: 1px solid var(--wpdev-line); }
+.site-title { margin: 0; font-size: 21px; line-height: 1.2; }
+.site-title a, .menu a { text-decoration: none; }
+.custom-logo { max-width: 180px; height: auto; }
+.menu { display: flex; flex-wrap: wrap; gap: 18px; margin: 0; padding: 0; list-style: none; }
+.site-main { min-height: 65vh; padding: 54px 0; }
+.entry { padding: 0 0 32px; margin-bottom: 32px; border-bottom: 1px solid var(--wpdev-line); }
+.entry-title { margin: 0 0 12px; font-size: clamp(28px, 5vw, 46px); line-height: 1.1; letter-spacing: -.04em; }
+.entry-title a { text-decoration: none; }
+.entry-meta, .site-footer, .widget { color: var(--wpdev-muted); }
+.entry-content img, .wp-block-image img { max-width: 100%; height: auto; }
+.wp-block-button__link, button, input[type="submit"] { display: inline-block; padding: 11px 16px; border: 0; border-radius: 4px; background: var(--wpdev-accent); color: var(--wpdev-ink); font: inherit; font-weight: 700; text-decoration: none; cursor: pointer; }
+input, textarea, select { max-width: 100%; padding: 10px; border: 1px solid var(--wpdev-line); border-radius: 4px; font: inherit; }
+.site-footer { padding: 24px 0 38px; border-top: 1px solid var(--wpdev-line); font-size: 14px; }
+.navigation.pagination, .post-navigation { margin: 24px 0; }
+.screen-reader-text { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
+@media (max-width: 640px) { .site-header { align-items: flex-start; flex-direction: column; }.site-main { padding-top: 34px; } }

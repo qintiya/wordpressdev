@@ -31,6 +31,7 @@ services:
     volumes:
       - wordpress_data:/var/www/html
       - ./wordpress/plugins/wordpressdev-core:/var/www/html/wp-content/plugins/wordpressdev-core:ro
+      - ./wordpress/themes/wordpressdev-default:/var/www/html/wp-content/themes/wordpressdev-default:ro
 
   frontend:
     build:
