@@ -9,6 +9,48 @@ WordPress and MariaDB are stateful services and should run on a server or manage
 
 Do not expose database credentials or WordPress Application Passwords in public frontend variables. Public REST reads for published content do not need credentials. Admin/editor actions must be handled through a secure server-side backend.
 
+## Self-hosting with Docker Compose and Caddy
+
+The repository's `docker-compose.yml` runs WordPress, MariaDB, the Next.js frontend and a Caddy reverse proxy on one server. Caddy serves both hostnames over HTTPS and obtains and renews their TLS certificates automatically.
+
+### Prerequisites
+
+- A server with Docker Engine and Docker Compose v2.
+- Two hostnames you control: one for the CMS and one for the frontend.
+- DNS `A` records for both hostnames pointing to the server's public IP. Add `AAAA` records only if the server is reachable over IPv6.
+- Inbound TCP ports `80` and `443` open to the server. UDP `443` is optional and enables HTTP/3. Make sure no firewall or DNS proxy blocks certificate validation.
+
+### Configure and start the stack
+
+1. Copy the environment template:
+
+   ```bash
+   cp .env.example .env
+   ```
+
+2. In `.env`, replace `MARIADB_PASSWORD` and `MARIADB_ROOT_PASSWORD` with strong secrets.
+3. Set `WORDPRESS_DOMAIN` to the CMS hostname and `FRONTEND_DOMAIN` to the frontend hostname. The defaults are `wp.awdev.eu.org` and `awdev.eu.org`; replace them with your own hostnames.
+4. Build and start the services:
+
+   ```bash
+   docker compose up -d --build
+   ```
+
+5. Open `https://<WORDPRESS_DOMAIN>/wp-admin/` and complete the WordPress installation.
+6. Activate the **WordPressDev Core** plugin and the **WordPressDev Default** theme.
+
+### How the services connect
+
+| Hostname | Caddy forwards to |
+| --- | --- |
+| `WORDPRESS_DOMAIN` | `wordpress` container, port `80` |
+| `FRONTEND_DOMAIN` | `frontend` container, port `3000` |
+
+- WordPress sets `WP_HOME` and `WP_SITEURL` to `https://<WORDPRESS_DOMAIN>` and forces HTTPS for the admin area.
+- The frontend reads content over the internal Docker network at `http://wordpress/wp-json/wp/v2`.
+- The frontend's "Open WordPress admin" link uses `NEXT_PUBLIC_WORDPRESS_ADMIN_URL`, which Compose sets to `https://<WORDPRESS_DOMAIN>` at build time. Rebuild the frontend with `docker compose up -d --build` after you change `WORDPRESS_DOMAIN`.
+- WordPress and the frontend are also published on `127.0.0.1` only, at `WORDPRESS_PORT` (default `8080`) and `FRONTEND_PORT` (default `3000`), for local debugging on the host.
+
 ## Netlify (Next.js)
 
 The repository includes `netlify.toml`, configured to use the `frontend/` directory and the Next.js adapter. Import the Git repository into Netlify, set the environment variable `WORDPRESS_API_URL` to the public WordPress REST API base URL, then deploy. Set `NEXT_PUBLIC_WORDPRESS_ADMIN_URL` to the public CMS origin if using the admin link in the frontend.
@@ -24,3 +66,5 @@ Configure the Worker environment with the public WordPress REST API URL. Bind th
 ## Custom domains
 
 Point the frontend hostname to Netlify or bind it to a Cloudflare Worker. Point the CMS hostname to the WordPress server. Configure HTTPS at each provider, then set the frontend API URL to the CMS REST API origin.
+
+If you self-host both services with Docker Compose, set `WORDPRESS_DOMAIN` and `FRONTEND_DOMAIN` in `.env` instead. Caddy handles HTTPS for both hostnames, as described in the self-hosting section above.
