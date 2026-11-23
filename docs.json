@@ -7,16 +7,16 @@
     "light": "#c9f36b",
     "dark": "#172321"
   },
-  "favicon": "/favicon.svg",
+  "favicon": "/docs/favicon.svg",
   "navigation": {
     "groups": [
       {
         "group": "Getting started",
-        "pages": ["index", "deployment"]
+        "pages": ["docs/index", "docs/deployment"]
       },
       {
         "group": "Headless frontends",
-        "pages": ["frontends", "cloud-integrations", "google-adsense"]
+        "pages": ["docs/frontends", "docs/cloud-integrations", "docs/google-adsense"]
       }
     ]
   }
