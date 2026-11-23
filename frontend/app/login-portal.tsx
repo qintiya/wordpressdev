@@ -37,6 +37,7 @@ export default function LoginPortal() {
         <p className="demo-notice"><strong>Demo only:</strong> this role selector is not authentication. It stores a temporary role in this browser session and must not be used to protect real data or production admin actions.</p>
         <a className="public-link" href="/posts">Browse published posts <span aria-hidden="true">↗</span></a>
         <a className="public-link" href="/frameworks">Explore web frameworks <span aria-hidden="true">↗</span></a>
+        <a className="public-link" href="/ai">Try the limited AI preview <span aria-hidden="true">↗</span></a>
 
         <section aria-labelledby="featured-video-title" style={{ marginTop: 28, padding: 18, border: '1px solid #dce4df', borderRadius: 10, background: '#fff' }}>
           <p className="eyebrow" style={{ marginTop: 0 }}>FEATURED VIDEO</p>
