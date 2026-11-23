@@ -5,6 +5,13 @@ import { useRouter } from 'next/navigation';
 
 export type DemoRole = 'admin' | 'member';
 
+const supportLinks = [
+  { name: 'Saweria', href: 'https://saweria.co/awdev' },
+  { name: 'Trakteer', href: 'https://trakteer.id/awfanspage' },
+  { name: 'SociaBuzz', href: 'https://www.sociabuzz.com/awdev' },
+  { name: 'PayPal', href: 'https://www.paypal.com/paypalme/wahyudi9kdl' },
+];
+
 export default function LoginPortal() {
   const [role, setRole] = useState<DemoRole>('admin');
   const router = useRouter();
@@ -37,6 +44,15 @@ export default function LoginPortal() {
           <p className="portal-copy" style={{ fontSize: 13 }}>View the Shutterstock clip, then continue to Shutterstock’s cart to review your selection and checkout.</p>
           <a href="https://www.shutterstock.com/id/video/clip-4239669383-close-up-calligrapher-hand-writing-creating-beautiful-calligraphy?trackingId=169e7452-ed59-405c-ba11-467eb24d75ed&listId=searchResults" target="_blank" rel="noreferrer" style={{ display: 'block', margin: '14px 0', color: '#315c45', fontSize: 13, fontWeight: 700 }}>View video on Shutterstock <span aria-hidden="true">↗</span></a>
           <a href="https://www.shutterstock.com/id/cart" target="_blank" rel="noreferrer" className="portal-button" style={{ textDecoration: 'none' }}>Checkout on Shutterstock <span aria-hidden="true">↗</span></a>
+        </section>
+
+        <section aria-labelledby="support-title" style={{ marginTop: 18, padding: 18, border: '1px solid #dce4df', borderRadius: 10, background: '#fff' }}>
+          <p className="eyebrow" style={{ marginTop: 0 }}>SUPPORT THE PROJECT</p>
+          <h2 id="support-title" style={{ margin: '8px 0', fontSize: 20 }}>Support AWDEV</h2>
+          <p className="portal-copy" style={{ fontSize: 13 }}>If you find this project useful, you can support its creator using one of these services.</p>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, minmax(0, 1fr))', gap: 10, marginTop: 14 }}>
+            {supportLinks.map((link) => <a key={link.name} href={link.href} target="_blank" rel="noreferrer" className="support-button">Support via {link.name} <span aria-hidden="true">↗</span></a>)}
+          </div>
         </section>
       </section>
     </main>
