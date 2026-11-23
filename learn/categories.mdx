@@ -1,0 +1,181 @@
+---
+title: "Learning Categories"
+sidebarTitle: "Categories"
+description: "Jelajahi 30 kategori pembelajaran teknologi AWDEV mulai dari HTML & CSS, JavaScript, UI/UX Design, hingga Community."
+keywords:
+  - "learning categories"
+  - "AWDEV"
+  - "web development"
+  - "categories"
+  - "technology"
+  - "education"
+---
+
+AWDEV menggunakan 30 label kategori untuk menandai artikel, alat, dan proyek. Label ini membantu kamu menemukan materi yang relevan dengan cepat, mulai dari topik pengembangan web hingga komunitas teknologi.
+
+## Jelajahi kategori
+
+Gunakan pencarian di bawah untuk menyaring kategori, atau klik grup untuk melihat kategori yang termasuk di dalamnya.
+
+<CategoryExplorer />
+
+## Semua kategori
+
+| Kategori | Grup | Deskripsi |
+| --- | --- | --- |
+| HTML & CSS | Development | Struktur dan gaya halaman web. |
+| JavaScript | Development | Bahasa pemrograman untuk interaktivitas web. |
+| Frontend | Development | Pengembangan antarmuka pengguna di browser. |
+| Backend | Development | Logika server, database, dan API. |
+| Source Code | Development | Kode sumber proyek dan repositori. |
+| Code Snippet | Development | Potongan kode siap pakai untuk tugas umum. |
+| Web Tools | Tools | Alat online untuk keperluan pengembangan web. |
+| Code Editor | Tools | Editor teks dan IDE untuk menulis kode. |
+| Generator | Tools | Alat pembuat kode, konfigurasi, atau aset otomatis. |
+| Developer Tools | Tools | Utilitas bantu untuk debugging dan pengembangan. |
+| Web Apps | Tools | Aplikasi web yang berjalan di browser. |
+| UI/UX Design | Design | Desain antarmuka dan pengalaman pengguna. |
+| Web Design | Design | Desain visual dan tata letak situs web. |
+| Color Palette | Design | Palet warna untuk proyek desain. |
+| Icons & Fonts | Design | Ikon dan tipografi untuk antarmuka. |
+| Visual Assets | Design | Gambar, ilustrasi, dan elemen visual lainnya. |
+| Video & Multimedia | Design | Konten video, audio, dan media kaya. |
+| Open Source | Open Source & Infra | Proyek dengan kode sumber terbuka. |
+| GitHub | Open Source & Infra | Platform hosting repositori dan kolaborasi kode. |
+| Cloud & Hosting | Open Source & Infra | Layanan infrastruktur dan hosting web. |
+| Web Security | Open Source & Infra | Keamanan aplikasi web dan data pengguna. |
+| SEO & Performance | Open Source & Infra | Optimasi mesin pencari dan kecepatan situs. |
+| Tutorials | Learning | Panduan langkah demi langkah untuk belajar. |
+| E-Learning | Learning | Pembelajaran online dan kursus digital. |
+| Tips & Tricks | Learning | Tips praktis dan trik pengembangan. |
+| Documentation | Learning | Dokumentasi teknis dan referensi. |
+| Resources | Learning | Kumpulan sumber daya bermanfaat untuk developer. |
+| Projects | Community | Proyek nyata yang bisa dipelajari atau dikontribusi. |
+| Tech News | Community | Berita dan perkembangan terbaru di dunia teknologi. |
+| Community | Community | Komunitas, forum, dan kolaborasi developer. |
+
+## Baca juga
+
+<Card title="Modern Web Development Guide" icon="book-open" href="/learn/modern-web-development-guide">
+  Panduan lengkap pengembangan web modern yang mencakup teknologi, praktik terbaik, dan alur kerja dari frontend hingga backend.
+</Card>
+
+## Bagikan
+
+[X](https://twitter.com/intent/tweet?url=https%3A%2F%2Fawdev-347a591f.mintlify.app%2Flearn%2Fcategories&amp;text=Learning%20Categories%20AWDEV) · [Facebook](https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fawdev-347a591f.mintlify.app%2Flearn%2Fcategories) · [WhatsApp](https://wa.me/?text=Learning%20Categories%20AWDEV%20https%3A%2F%2Fawdev-347a591f.mintlify.app%2Flearn%2Fcategories) · [LinkedIn](https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fawdev-347a591f.mintlify.app%2Flearn%2Fcategories) · [Telegram](https://t.me/share/url?url=https%3A%2F%2Fawdev-347a591f.mintlify.app%2Flearn%2Fcategories&amp;text=Learning%20Categories%20AWDEV)
+
+export const CategoryExplorer = () => {
+  const [query, setQuery] = useState("");
+  const [activeGroup, setActiveGroup] = useState("Semua");
+
+  const groups = [
+    {
+      name: "Development",
+      emoji: "💻",
+      desc: "Topik seputar pengembangan web dan pemrograman.",
+      items: ["HTML & CSS", "JavaScript", "Frontend", "Backend", "Source Code", "Code Snippet"],
+    },
+    {
+      name: "Tools",
+      emoji: "🛠️",
+      desc: "Alat bantu untuk developer dan desainer.",
+      items: ["Web Tools", "Code Editor", "Generator", "Developer Tools", "Web Apps"],
+    },
+    {
+      name: "Design",
+      emoji: "🎨",
+      desc: "Desain antarmuka, visual, dan multimedia.",
+      items: ["UI/UX Design", "Web Design", "Color Palette", "Icons & Fonts", "Visual Assets", "Video & Multimedia"],
+    },
+    {
+      name: "Open Source & Infra",
+      emoji: "☁️",
+      desc: "Infrastruktur, keamanan, dan komunitas open source.",
+      items: ["Open Source", "GitHub", "Cloud & Hosting", "Web Security", "SEO & Performance"],
+    },
+    {
+      name: "Learning",
+      emoji: "📚",
+      desc: "Materi pembelajaran dan sumber daya edukatif.",
+      items: ["Tutorials", "E-Learning", "Tips & Tricks", "Documentation", "Resources"],
+    },
+    {
+      name: "Community",
+      emoji: "🤝",
+      desc: "Komunitas, berita, dan kolaborasi.",
+      items: ["Projects", "Tech News", "Community"],
+    },
+  ];
+
+  const allItems = groups.flatMap((g) => g.items.map((item) => ({ item, group: g.name })));
+
+  const filtered = allItems.filter(({ item, group }) => {
+    const matchQuery = item.toLowerCase().includes(query.toLowerCase());
+    const matchGroup = activeGroup === "Semua" || group === activeGroup;
+    return matchQuery && matchGroup;
+  });
+
+  const chipStyle = (selected) => ({
+    padding: "6px 12px",
+    borderRadius: 999,
+    border: "1px solid rgba(127,127,127,.35)",
+    background: selected ? "#315c45" : "transparent",
+    color: selected ? "#fff" : "inherit",
+    font: "inherit",
+    cursor: "pointer",
+    fontSize: 13,
+  });
+
+  const cardStyle = {
+    border: "1px solid rgba(127,127,127,.25)",
+    borderRadius: 10,
+    padding: 12,
+    background: "transparent",
+    color: "inherit",
+    font: "inherit",
+    textAlign: "left",
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    gap: 8,
+    fontSize: 14,
+  };
+
+  return (
+    <div className="not-prose" style={{ border: "1px solid rgba(127,127,127,.25)", borderRadius: 12, padding: 16, display: "grid", gap: 14 }}>
+      <label style={{ display: "grid", gap: 6, fontSize: 14 }}>
+        Cari kategori
+        <input
+          type="text"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Ketik nama kategori..."
+          style={{ background: "transparent", color: "inherit", border: "1px solid rgba(127,127,127,.35)", borderRadius: 8, padding: 8, width: "100%", font: "inherit" }}
+        />
+      </label>
+
+      <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
+        <button type="button" style={chipStyle(activeGroup === "Semua")} onClick={() => setActiveGroup("Semua")}>
+          Semua
+        </button>
+        {groups.map((g) => (
+          <button type="button" key={g.name} style={chipStyle(activeGroup === g.name)} onClick={() => setActiveGroup(g.name)}>
+            {g.emoji} {g.name}
+          </button>
+        ))}
+      </div>
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(160px, 1fr))", gap: 10 }}>
+        {filtered.map(({ item, group }) => (
+          <div key={item} style={cardStyle} title={group}>
+            <span style={{ fontSize: 16 }}>🏷️</span>
+            <span>{item}</span>
+          </div>
+        ))}
+        {filtered.length === 0 && (
+          <div style={{ gridColumn: "1 / -1", fontSize: 14, opacity: 0.7 }}>Tidak ada kategori yang cocok.</div>
+        )}
+      </div>
+    </div>
+  );
+};

@@ -1,0 +1,155 @@
+---
+title: "Word & Character Counter Online"
+sidebarTitle: "Word Counter"
+description: "Hitung kata, karakter, kalimat, paragraf, waktu baca, dan kata paling sering secara real time dengan Word Counter AWDEV."
+keywords:
+  - "word counter"
+  - "character counter"
+  - "hitung kata"
+  - "hitung karakter"
+  - "reading time"
+  - "online tool"
+---
+
+Word & Character Counter adalah alat online gratis untuk menghitung statistik teks secara instan. Cukup tempel atau ketik teks ke dalam kotak di bawah, maka jumlah kata, karakter, kalimat, paragraf, estimasi waktu baca, dan kata-kata paling sering muncul akan dihitung secara otomatis.
+
+Widget di bawah berjalan sepenuhnya di browser Anda: tidak ada teks yang dikirim ke server. Kami menggunakan asumsi kecepatan membaca rata-rata 200 kata per menit dan kecepatan berbicara 130 kata per menit untuk estimasi waktu.
+
+<WordCounter />
+
+## Cara menggunakan
+
+<Steps>
+  <Step title="Tempel atau ketik teks">
+    Masukkan teks apa pun ke dalam area teks besar. Statistik akan diperbarui secara otomatis saat Anda mengetik.
+  </Step>
+  <Step title="Baca statistik">
+    Lihat panel statistik untuk mengetahui jumlah kata, karakter, karakter tanpa spasi, kalimat, paragraf, waktu baca, dan waktu bicara.
+  </Step>
+  <Step title="Lihat kata teratas">
+    Bagian bawah menampilkan 5 kata paling sering muncul (panjang lebih dari 3 huruf, tidak membedakan huruf besar/kecil).
+  </Step>
+  <Step title="Salin atau hapus">
+    Gunakan tombol Copy untuk menyalin teks ke clipboard, atau Clear untuk mengosongkan area teks.
+  </Step>
+</Steps>
+
+## FAQ
+
+<AccordionGroup>
+  <Accordion title="Apakah teks saya tersimpan di server?">
+    Tidak. Semua perhitungan dilakukan secara lokal di browser Anda. Tidak ada data yang dikirim ke server AWDEV.
+  </Accordion>
+
+  <Accordion title="Bagaimana cara menghitung waktu baca?">
+    Waktu baca dihitung dengan asumsi kecepatan membaca rata-rata 200 kata per menit. Waktu bicara menggunakan asumsi 130 kata per menit.
+  </Accordion>
+
+  <Accordion title="Mengapa kata pendek tidak muncul di daftar kata teratas?">
+    Kata dengan panjang 3 huruf atau kurang diabaikan agar daftar lebih bermakna (misalnya "dan", "yang", "di").
+  </Accordion>
+
+  <Accordion title="Apakah alat ini gratis?">
+    Ya, Word & Character Counter adalah alat gratis yang dapat digunakan tanpa batasan.
+  </Accordion>
+</AccordionGroup>
+
+## Lihat alat lainnya
+
+Jelajahi lebih banyak alat pengembangan web di [Direktori Alat Web](/web-tools/index).
+
+## Bagikan
+
+Bagikan halaman ini: [X](https://twitter.com/intent/tweet?url=https%3A%2F%2Fawdev-347a591f.mintlify.app%2Fweb-tools%2Fword-counter&amp;text=Word%20%26%20Character%20Counter%20Online) · [Facebook](https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fawdev-347a591f.mintlify.app%2Fweb-tools%2Fword-counter) · [WhatsApp](https://wa.me/?text=Word%20%26%20Character%20Counter%20Online%20https%3A%2F%2Fawdev-347a591f.mintlify.app%2Fweb-tools%2Fword-counter) · [LinkedIn](https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fawdev-347a591f.mintlify.app%2Fweb-tools%2Fword-counter) · [Telegram](https://t.me/share/url?url=https%3A%2F%2Fawdev-347a591f.mintlify.app%2Fweb-tools%2Fword-counter&amp;text=Word%20%26%20Character%20Counter%20Online)
+
+export const WordCounter = () => {
+  const [text, setText] = useState("");
+  const [copied, setCopied] = useState(false);
+
+  const stats = useMemo(() => {
+    const trimmed = text.trim();
+    const words = trimmed.length === 0 ? 0 : trimmed.split(/\s+/).length;
+    const chars = text.length;
+    const charsNoSpace = text.replace(/\s/g, "").length;
+    const sentences = trimmed.length === 0 ? 0 : text.split(/[.!?]+/).filter(s => s.trim().length > 0).length;
+    const paragraphs = trimmed.length === 0 ? 0 : text.split(/\n\s*\n/).filter(p => p.trim().length > 0).length;
+    const readTimeMin = words === 0 ? 0 : Math.max(1, Math.ceil(words / 200));
+    const speakTimeMin = words === 0 ? 0 : Math.max(1, Math.ceil(words / 130));
+
+    const freq = {};
+    const rawWords = text.toLowerCase().match(/[a-z0-9\u00C0-\u017F]+/g) || [];
+    for (const w of rawWords) {
+      if (w.length > 3) freq[w] = (freq[w] || 0) + 1;
+    }
+    const topWords = Object.entries(freq)
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 5);
+
+    return { words, chars, charsNoSpace, sentences, paragraphs, readTimeMin, speakTimeMin, topWords };
+  }, [text]);
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch (e) {}
+  };
+
+  const handleClear = () => setText("");
+
+  return (
+    <div className="not-prose" style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+        <button type="button" onClick={handleCopy} style={{ padding: "8px 14px", borderRadius: 8, border: "1px solid rgba(127,127,127,.35)", background: "transparent", color: "inherit", cursor: "pointer" }}>
+          {copied ? "Copied!" : "Copy"}
+        </button>
+        <button type="button" onClick={handleClear} style={{ padding: "8px 14px", borderRadius: 8, border: "1px solid rgba(127,127,127,.35)", background: "transparent", color: "inherit", cursor: "pointer" }}>
+          Clear
+        </button>
+      </div>
+
+      <textarea
+        rows={10}
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        placeholder="Ketik atau tempel teks di sini..."
+        style={{ background: "transparent", color: "inherit", border: "1px solid rgba(127,127,127,.35)", borderRadius: 8, padding: 12, width: "100%", font: "inherit" }}
+      />
+
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))", gap: 12 }}>
+        {[
+          { label: "Kata", value: stats.words },
+          { label: "Karakter", value: stats.chars },
+          { label: "Tanpa spasi", value: stats.charsNoSpace },
+          { label: "Kalimat", value: stats.sentences },
+          { label: "Paragraf", value: stats.paragraphs },
+          { label: "Waktu baca", value: stats.readTimeMin + " mnt" },
+          { label: "Waktu bicara", value: stats.speakTimeMin + " mnt" },
+        ].map((s) => (
+          <div key={s.label} style={{ border: "1px solid rgba(127,127,127,.25)", borderRadius: 8, padding: 12, textAlign: "center" }}>
+            <div style={{ fontSize: 20, fontWeight: 700, color: "#315c45" }}>{s.value}</div>
+            <div style={{ fontSize: 12, opacity: 0.8 }}>{s.label}</div>
+          </div>
+        ))}
+      </div>
+
+      <div style={{ border: "1px solid rgba(127,127,127,.25)", borderRadius: 8, padding: 12 }}>
+        <div style={{ fontWeight: 700, marginBottom: 8 }}>5 Kata Paling Sering</div>
+        {stats.topWords.length === 0 ? (
+          <div style={{ opacity: 0.7 }}>Belum ada kata yang memenuhi syarat.</div>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+            {stats.topWords.map(([word, count], idx) => (
+              <div key={word} style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                <span style={{ minWidth: 22, fontWeight: 700, color: "#315c45" }}>{idx + 1}.</span>
+                <span style={{ flex: 1 }}>{word}</span>
+                <span style={{ fontSize: 12, opacity: 0.8 }}>{count}x</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};

@@ -1,0 +1,279 @@
+---
+title: "Digital Tasbih (Dhikr Counter)"
+sidebarTitle: "Digital Tasbih"
+description: "Tasbih digital interaktif AWDEV untuk menghitung dhikr harian. Pilih dzikir, atur target, dan tap untuk menghitung dengan mudah."
+keywords:
+  - "tasbih digital"
+  - "dhikr counter"
+  - "tasbih online"
+  - "dzikir"
+  - "subhanallah"
+  - "alhamdulillah"
+  - "allahu akbar"
+  - "islamic tools"
+---
+
+Digital Tasbih adalah alat bantu praktis untuk menghitung dzikir harian langsung dari peramban Anda. Pilih dzikir yang ingin diamalkan, tentukan target hitungan, lalu tap tombol besar atau tekan Spasi/Enter untuk menghitung. Setiap kali target tercapai, putaran baru akan dimulai secara otomatis.
+
+Salah satu amalan yang sering diajarkan adalah dzikir setelah salat fardhu: 33 kali Subhanallah, 33 kali Alhamdulillah, dan 34 kali Allahu Akbar. Amalan ini dikenal luas dalam berbagai tradisi pengajaran Islam. Anda bebas menyesuaikan target dan jenis dzikir sesuai kebutuhan spiritual Anda.
+
+<DigitalTasbih />
+
+<Note>
+  Penghitung akan kembali ke nol jika halaman dimuat ulang. Gunakan sebagai panduan amalan harian Anda.
+</Note>
+
+## Cara menggunakan
+
+<Steps>
+  <Step title="Pilih dzikir">
+    Pilih salah satu dzikir dari daftar. Setiap pilihan menampilkan lafaz Arab, tulisan Latin, dan arti.
+  </Step>
+  <Step title="Atur target">
+    Pilih target 33, 99, 100, atau masukkan angka kustom sesuai keinginan Anda.
+  </Step>
+  <Step title="Mulai menghitung">
+    Klik tombol bulat besar atau tekan tombol Spasi/Enter pada keyboard untuk menambah hitungan.
+  </Step>
+  <Step title="Selesaikan putaran">
+    Ketika target tercapai, penghitung akan memberi tahu dan putaran baru dimulai secara otomatis pada tap berikutnya.
+  </Step>
+  <Step title="Koreksi jika perlu">
+    Gunakan tombol Undo untuk mengurangi satu hitungan, atau Reset untuk mengulang dari nol.
+  </Step>
+</Steps>
+
+## Pertanyaan umum
+
+<AccordionGroup>
+  <Accordion title="Apakah hitungan tersimpan jika saya menutup halaman?">
+    Tidak. Penghitung berjalan sepenuhnya di peramban Anda tanpa menyimpan data ke server. Hitungan akan kembali ke nol saat halaman dimuat ulang atau ditutup.
+  </Accordion>
+
+  <Accordion title="Bagaimana cara mengubah target hitungan?">
+    Pilih salah satu tombol target (33, 99, 100) atau masukkan angka kustom di kolom yang tersedia. Target baru akan berlaku pada putaran berikutnya.
+  </Accordion>
+
+  <Accordion title="Apakah saya bisa menggunakan keyboard?">
+    Ya. Tekan Spasi atau Enter saat fokus berada di area tombol besar untuk menambah hitungan tanpa menggunakan mouse atau layar sentuh.
+  </Accordion>
+
+  <Accordion title="Apa yang terjadi jika saya melebihi target?">
+    Setelah target tercapai, tap berikutnya akan memulai putaran baru dari nol. Anda dapat terus menghitung tanpa batas jumlah putaran.
+  </Accordion>
+</AccordionGroup>
+
+## Lihat juga
+
+- [Katalog Islamic Tools](/islamic-tools/index)
+- [Daily Duas & Morning/Evening Adhkar](/islamic-tools/daily-duas) (Segera hadir)
+- [Asmaul Husna (99 Names of Allah)](/islamic-tools/asmaul-husna) (Segera hadir)
+
+## Bagikan
+
+[X](https://twitter.com/intent/tweet?url=https%3A%2F%2Fawdev-347a591f.mintlify.app%2Fislamic-tools%2Ftasbih&amp;text=Tasbih%20digital%20interaktif%20untuk%20dzikir%20harian%20di%20AWDEV) · [Facebook](https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fawdev-347a591f.mintlify.app%2Fislamic-tools%2Ftasbih) · [WhatsApp](https://wa.me/?text=Tasbih%20digital%20interaktif%20untuk%20dzikir%20harian%20di%20AWDEV%20https%3A%2F%2Fawdev-347a591f.mintlify.app%2Fislamic-tools%2Ftasbih) · [LinkedIn](https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fawdev-347a591f.mintlify.app%2Fislamic-tools%2Ftasbih) · [Telegram](https://t.me/share/url?url=https%3A%2F%2Fawdev-347a591f.mintlify.app%2Fislamic-tools%2Ftasbih&amp;text=Tasbih%20digital%20interaktif%20untuk%20dzikir%20harian%20di%20AWDEV)
+
+export const DigitalTasbih = () => {
+  const dhikrList = [
+    { id: 'subhanallah', arabic: 'سُبْحَانَ اللَّهِ', latin: 'Subhanallah', meaning: 'Maha Suci Allah' },
+    { id: 'alhamdulillah', arabic: 'الْحَمْدُ لِلَّهِ', latin: 'Alhamdulillah', meaning: 'Segala puji bagi Allah' },
+    { id: 'allahuakbar', arabic: 'اللَّهُ أَكْبَرُ', latin: 'Allahu Akbar', meaning: 'Allah Maha Besar' },
+    { id: 'lailahaillallah', arabic: 'لَا إِلَٰهَ إِلَّا اللَّهُ', latin: 'La ilaha illallah', meaning: 'Tidak ada tuhan selain Allah' },
+    { id: 'astaghfirullah', arabic: 'أَسْتَغْفِرُ اللَّهَ', latin: 'Astaghfirullah', meaning: 'Aku memohon ampun kepada Allah' },
+  ];
+
+  const [selectedDhikr, setSelectedDhikr] = useState(dhikrList[0]);
+  const [target, setTarget] = useState(33);
+  const [customTarget, setCustomTarget] = useState('');
+  const [count, setCount] = useState(0);
+  const [rounds, setRounds] = useState(0);
+  const [message, setMessage] = useState('');
+  const [justReached, setJustReached] = useState(false);
+
+  const effectiveTarget = target === 'custom' ? Math.max(1, Number(customTarget) || 1) : target;
+  const progress = Math.min(count / effectiveTarget, 1);
+  const circumference = 2 * Math.PI * 90;
+  const strokeDashoffset = circumference * (1 - progress);
+
+  const handleTap = () => {
+    if (justReached) {
+      setCount(1);
+      setJustReached(false);
+      setMessage('');
+      return;
+    }
+    const next = count + 1;
+    if (next >= effectiveTarget) {
+      setCount(effectiveTarget);
+      setRounds((r) => r + 1);
+      setMessage('Target tercapai! Tap lagi untuk putaran baru.');
+      setJustReached(true);
+    } else {
+      setCount(next);
+      setMessage('');
+    }
+  };
+
+  const handleUndo = () => {
+    if (justReached) {
+      setJustReached(false);
+      setMessage('');
+      setCount(effectiveTarget - 1);
+      setRounds((r) => Math.max(0, r - 1));
+      return;
+    }
+    setCount((c) => Math.max(0, c - 1));
+  };
+
+  const handleReset = () => {
+    setCount(0);
+    setRounds(0);
+    setMessage('');
+    setJustReached(false);
+  };
+
+  const handleKey = (e) => {
+    if (e.key === ' ' || e.key === 'Enter') {
+      e.preventDefault();
+      handleTap();
+    }
+  };
+
+  const btnBase = {
+    padding: '8px 14px',
+    borderRadius: 8,
+    border: '1px solid rgba(127,127,127,.35)',
+    background: 'transparent',
+    color: 'inherit',
+    font: 'inherit',
+    cursor: 'pointer',
+  };
+
+  const activeBtn = {
+    ...btnBase,
+    border: '2px solid #315c45',
+    background: 'rgba(49,92,69,0.12)',
+    fontWeight: 600,
+  };
+
+  return (
+    <div className="not-prose" style={{ display: 'grid', gap: 16 }} tabIndex={0} onKeyDown={handleKey}>
+      <div style={{ border: '1px solid rgba(127,127,127,.25)', borderRadius: 12, padding: 16, display: 'grid', gap: 12 }}>
+        <div style={{ fontWeight: 600, fontSize: 16 }}>Pilih Dzikir</div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(160px, 1fr))', gap: 8 }}>
+          {dhikrList.map((d) => (
+            <button
+              key={d.id}
+              type="button"
+              onClick={() => { setSelectedDhikr(d); handleReset(); }}
+              style={selectedDhikr.id === d.id ? activeBtn : btnBase}
+            >
+              <div style={{ fontSize: 16, fontWeight: 700 }}>{d.arabic}</div>
+              <div style={{ fontSize: 12, opacity: 0.8 }}>{d.latin}</div>
+              <div style={{ fontSize: 11, opacity: 0.6 }}>{d.meaning}</div>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div style={{ border: '1px solid rgba(127,127,127,.25)', borderRadius: 12, padding: 16, display: 'grid', gap: 12 }}>
+        <div style={{ fontWeight: 600, fontSize: 16 }}>Target Hitungan</div>
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
+          {[33, 99, 100].map((t) => (
+            <button
+              key={t}
+              type="button"
+              onClick={() => { setTarget(t); setCustomTarget(''); handleReset(); }}
+              style={target === t ? activeBtn : btnBase}
+            >
+              {t}
+            </button>
+          ))}
+          <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 14 }}>
+            <input
+              type="radio"
+              name="target"
+              checked={target === 'custom'}
+              onChange={() => setTarget('custom')}
+              style={{ accentColor: '#315c45' }}
+            />
+            Kustom:
+            <input
+              type="number"
+              min={1}
+              value={customTarget}
+              onChange={(e) => { setTarget('custom'); setCustomTarget(e.target.value); handleReset(); }}
+              style={{ background: 'transparent', color: 'inherit', border: '1px solid rgba(127,127,127,.35)', borderRadius: 8, padding: '6px 10px', font: 'inherit', width: 80 }}
+              placeholder="Angka"
+            />
+          </label>
+        </div>
+      </div>
+
+      <div style={{ border: '1px solid rgba(127,127,127,.25)', borderRadius: 12, padding: 24, display: 'grid', placeItems: 'center', gap: 16 }}>
+        <div style={{ position: 'relative', width: 220, height: 220 }}>
+          <svg viewBox="0 0 220 220" style={{ width: '100%', height: '100%', transform: 'rotate(-90deg)' }}>
+            <circle cx="110" cy="110" r="90" fill="none" stroke="rgba(127,127,127,.25)" strokeWidth={12} />
+            <circle
+              cx="110"
+              cy="110"
+              r="90"
+              fill="none"
+              stroke="#315c45"
+              strokeWidth={12}
+              strokeLinecap="round"
+              strokeDasharray={circumference}
+              strokeDashoffset={strokeDashoffset}
+              style={{ transition: 'stroke-dashoffset 0.2s ease' }}
+            />
+          </svg>
+          <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+            <div style={{ fontSize: 52, fontWeight: 800, color: '#315c45', lineHeight: 1 }}>{count}</div>
+            <div style={{ fontSize: 13, opacity: 0.7, marginTop: 4 }}>/ {effectiveTarget}</div>
+          </div>
+        </div>
+
+        <button
+          type="button"
+          onClick={handleTap}
+          style={{
+            width: 160,
+            height: 160,
+            borderRadius: '50%',
+            border: '3px solid #315c45',
+            background: 'rgba(49,92,69,0.12)',
+            color: 'inherit',
+            font: 'inherit',
+            fontSize: 18,
+            fontWeight: 700,
+            cursor: 'pointer',
+            display: 'grid',
+            placeItems: 'center',
+            textAlign: 'center',
+          }}
+          aria-label="Tambah hitungan"
+        >
+          <div>
+            <div style={{ fontSize: 22 }}>{selectedDhikr.arabic}</div>
+            <div style={{ fontSize: 13, opacity: 0.8, marginTop: 4 }}>Tap atau Spasi</div>
+          </div>
+        </button>
+
+        {message && (
+          <div style={{ fontSize: 15, fontWeight: 600, color: '#315c45', textAlign: 'center' }}>
+            {message}
+          </div>
+        )}
+
+        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center' }}>
+          <button type="button" onClick={handleUndo} style={btnBase}>Undo (-1)</button>
+          <button type="button" onClick={handleReset} style={{ ...btnBase, borderColor: 'rgba(200,80,80,.5)' }}>Reset</button>
+        </div>
+
+        <div style={{ fontSize: 13, opacity: 0.7 }}>
+          Putaran selesai: <strong>{rounds}</strong>
+        </div>
+      </div>
+    </div>
+  );
+};

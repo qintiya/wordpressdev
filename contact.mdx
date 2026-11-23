@@ -1,0 +1,214 @@
+---
+title: "Contact Us"
+sidebarTitle: "Contact Us"
+description: "Hubungi tim AWDEV untuk pertanyaan, laporan bug, permintaan fitur, atau kerja sama. Kirim pesan melalui formulir atau email."
+keywords:
+  - "contact AWDEV"
+  - "hubungi kami"
+  - "support"
+  - "email"
+  - "GitHub issues"
+  - "bug report"
+  - "partnership"
+---
+
+Tim AWDEV terbuka untuk berbagai pertanyaan, masukan, dan peluang kerja sama. Jika Anda memiliki pertanyaan tentang penggunaan alat, ingin melaporkan bug, mengusulkan fitur baru, atau menjajaki kerja sama, silakan hubungi kami melalui salah satu kanal berikut.
+
+<Columns cols={2}>
+  <Card title="Email" icon="envelope" href="mailto:contact@awdev.eu.org">
+    Kirim pesan langsung ke [contact@awdev.eu.org](mailto:contact@awdev.eu.org) untuk pertanyaan umum dan bantuan.
+  </Card>
+
+  <Card title="GitHub" icon="github" href="https://github.com/qintiya/wordpressdev">
+    Kunjungi repository kami di GitHub. Untuk laporan bug, buka Issue baru di halaman Issues.
+  </Card>
+</Columns>
+
+<ContactForm />
+
+<Tip>
+  Formulir di atas membuka aplikasi email bawaan perangkat Anda. Tidak ada data yang disimpan di server AWDEV. Pastikan aplikasi email telah terkonfigurasi agar pesan dapat dikirim.
+</Tip>
+
+## Pertanyaan umum
+
+<AccordionGroup>
+  <Accordion title="Berapa lama waktu tanggapan yang diberikan?">
+    Kami berusaha membaca setiap pesan yang masuk. Waktu tanggapan dapat bervariasi tergantung volume dan kompleksitas pertanyaan. Kami tidak menjanjikan tanggapan dalam waktu tertentu, tetapi akan menghubungi Anda secepat mungkin jika diperlukan.
+  </Accordion>
+
+  <Accordion title="Di mana saya bisa melaporkan bug?">
+    Anda bisa melaporkan bug melalui formulir kontak dengan memilih subjek "Bug report", atau langsung membuka Issue di GitHub repository kami.
+  </Accordion>
+
+  <Accordion title="Bagaimana cara mengusulkan fitur baru?">
+    Gunakan formulir kontak dengan subjek "Tool request" atau buat Issue di GitHub. Jelaskan fitur yang diusulkan dan manfaatnya agar kami dapat mengevaluasinya dengan baik.
+  </Accordion>
+
+  <Accordion title="Apakah AWDEV menerima kerja sama?">
+    Ya. Pilih subjek "Partnership" pada formulir dan ceritakan secara singkat tentang ide kerja sama Anda. Kami akan meninjau proposal tersebut.
+  </Accordion>
+</AccordionGroup>
+
+## Lihat juga
+
+- [Tentang AWDEV](/about)
+- [Kebijakan Privasi](/privacy-policy)
+- [Syarat dan Ketentuan](/terms)
+
+## Bagikan
+
+[X](https://twitter.com/intent/tweet?url=https%3A%2F%2Fawdev-347a591f.mintlify.app%2Fcontact&amp;text=Hubungi%20tim%20AWDEV%20untuk%20pertanyaan%20dan%20kerja%20sama) · [Facebook](https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fawdev-347a591f.mintlify.app%2Fcontact) · [WhatsApp](https://wa.me/?text=Hubungi%20tim%20AWDEV%20untuk%20pertanyaan%20dan%20kerja%20sama%20https%3A%2F%2Fawdev-347a591f.mintlify.app%2Fcontact) · [LinkedIn](https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fawdev-347a591f.mintlify.app%2Fcontact) · [Telegram](https://t.me/share/url?url=https%3A%2F%2Fawdev-347a591f.mintlify.app%2Fcontact&amp;text=Hubungi%20tim%20AWDEV%20untuk%20pertanyaan%20dan%20kerja%20sama)
+
+export const ContactForm = () => {
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [subject, setSubject] = useState('General question');
+  const [message, setMessage] = useState('');
+  const [honeypot, setHoneypot] = useState('');
+  const [errors, setErrors] = useState({});
+  const [submitted, setSubmitted] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+  const validate = () => {
+    const next = {};
+    if (!name.trim()) next.name = 'Nama wajib diisi.';
+    if (!email.trim()) {
+      next.email = 'Email wajib diisi.';
+    } else if (!emailRegex.test(email.trim())) {
+      next.email = 'Format email tidak valid.';
+    }
+    if (!message.trim()) {
+      next.message = 'Pesan wajib diisi.';
+    } else if (message.trim().length < 20) {
+      next.message = 'Pesan minimal 20 karakter.';
+    }
+    setErrors(next);
+    return Object.keys(next).length === 0;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (honeypot) return;
+    if (!validate()) return;
+
+    const subj = `[AWDEV] ${subject}: ${name.trim()}`;
+    const body = `Nama: ${name.trim()}\nEmail: ${email.trim()}\nSubjek: ${subject}\n\nPesan:\n${message.trim()}`;
+    const mailtoUrl = `mailto:contact@awdev.eu.org?subject=${encodeURIComponent(subj)}&body=${encodeURIComponent(body)}`;
+
+    window.location.href = mailtoUrl;
+    setSubmitted(true);
+  };
+
+  const handleCopy = async () => {
+    try {
+      const body = `Nama: ${name.trim()}\nEmail: ${email.trim()}\nSubjek: ${subject}\n\nPesan:\n${message.trim()}`;
+      await navigator.clipboard.writeText(body);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (e) {}
+  };
+
+  const inputStyle = {
+    background: 'transparent',
+    color: 'inherit',
+    border: '1px solid rgba(127,127,127,.35)',
+    borderRadius: 8,
+    padding: 10,
+    width: '100%',
+    font: 'inherit',
+  };
+
+  const labelStyle = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 6,
+    fontSize: 14,
+  };
+
+  if (submitted) {
+    const mailtoUrl = `mailto:contact@awdev.eu.org?subject=${encodeURIComponent(`[AWDEV] ${subject}: ${name.trim()}`)}&body=${encodeURIComponent(`Nama: ${name.trim()}\nEmail: ${email.trim()}\nSubjek: ${subject}\n\nPesan:\n${message.trim()}`)}`;
+    return (
+      <div className="not-prose" style={{ border: '1px solid rgba(49,92,69,.35)', borderRadius: 12, padding: 20, background: 'rgba(49,92,69,.08)' }}>
+        <div style={{ fontWeight: 700, fontSize: 18, color: '#315c45', marginBottom: 8 }}>Pesan siap dikirim</div>
+        <p style={{ fontSize: 14, marginBottom: 12 }}>Aplikasi email di perangkat Anda telah dibuka. Jika tidak terbuka otomatis, Anda bisa menyalin pesan di bawah ini dan mengirimkannya secara manual.</p>
+        <div style={{ border: '1px solid rgba(127,127,127,.25)', borderRadius: 8, padding: 12, background: 'rgba(127,127,127,.08)', fontSize: 13, whiteSpace: 'pre-wrap', marginBottom: 12 }}>
+          {`Nama: ${name.trim()}\nEmail: ${email.trim()}\nSubjek: ${subject}\n\nPesan:\n${message.trim()}`}
+        </div>
+        <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', alignItems: 'center' }}>
+          <button type="button" onClick={handleCopy} style={{ ...inputStyle, width: 'auto', cursor: 'pointer', padding: '8px 14px', fontWeight: 600 }}>
+            {copied ? 'Tersalin!' : 'Salin pesan'}
+          </button>
+          <a href={mailtoUrl} style={{ ...inputStyle, width: 'auto', textDecoration: 'none', display: 'inline-block', padding: '8px 14px', fontWeight: 600 }}>Buka email lagi</a>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="not-prose" style={{ border: '1px solid rgba(127,127,127,.25)', borderRadius: 12, padding: 20, display: 'grid', gap: 14 }}>
+      <div style={{ fontWeight: 600, fontSize: 16 }}>Kirim pesan</div>
+
+      <div style={{ display: 'none' }}>
+        <label>
+          Jangan isi kolom ini
+          <input type="text" value={honeypot} onChange={(e) => setHoneypot(e.target.value)} tabIndex={-1} autoComplete="off" />
+        </label>
+      </div>
+
+      <label style={labelStyle}>
+        Nama
+        <input type="text" value={name} onChange={(e) => setName(e.target.value)} style={{ ...inputStyle, borderColor: errors.name ? 'rgba(200,80,80,.6)' : 'rgba(127,127,127,.35)' }} placeholder="Nama Anda" />
+        {errors.name && <span style={{ fontSize: 12, color: 'rgba(200,80,80,.9)' }}>{errors.name}</span>}
+      </label>
+
+      <label style={labelStyle}>
+        Email
+        <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} style={{ ...inputStyle, borderColor: errors.email ? 'rgba(200,80,80,.6)' : 'rgba(127,127,127,.35)' }} placeholder="email@contoh.com" />
+        {errors.email && <span style={{ fontSize: 12, color: 'rgba(200,80,80,.9)' }}>{errors.email}</span>}
+      </label>
+
+      <label style={labelStyle}>
+        Subjek
+        <select value={subject} onChange={(e) => setSubject(e.target.value)} style={inputStyle}>
+          <option>General question</option>
+          <option>Bug report</option>
+          <option>Tool request</option>
+          <option>Partnership</option>
+          <option>Other</option>
+        </select>
+      </label>
+
+      <label style={labelStyle}>
+        Pesan
+        <textarea
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
+          rows={5}
+          style={{ ...inputStyle, borderColor: errors.message ? 'rgba(200,80,80,.6)' : 'rgba(127,127,127,.35)', resize: 'vertical' }}
+          placeholder="Tulis pesan Anda di sini (minimal 20 karakter)"
+        />
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          {errors.message ? <span style={{ fontSize: 12, color: 'rgba(200,80,80,.9)' }}>{errors.message}</span> : <span />}
+          <span style={{ fontSize: 12, opacity: 0.7 }}>{message.length} karakter</span>
+        </div>
+      </label>
+
+      <button
+        type="submit"
+        style={{
+          ...inputStyle,
+          cursor: 'pointer',
+          fontWeight: 700,
+          background: 'rgba(49,92,69,.12)',
+          borderColor: '#315c45',
+          color: 'inherit',
+        }}
+      >
+        Kirim pesan
+      </button>
+    </form>
+  );
+};

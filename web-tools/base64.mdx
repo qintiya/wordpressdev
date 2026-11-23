@@ -1,0 +1,205 @@
+---
+title: "Base64 Encoder / Decoder"
+sidebarTitle: "Base64 Encoder"
+description: "Encode dan decode teks ke Base64 secara aman di browser dengan Base64 Encoder/Decoder AWDEV. Mendukung URL-safe Base64 dan UTF-8."
+keywords:
+  - "base64 encoder"
+  - "base64 decoder"
+  - "url safe base64"
+  - "utf-8 base64"
+  - "online tool"
+  - "base64 encode decode"
+---
+
+Base64 Encoder / Decoder adalah alat online untuk mengubah teks menjadi representasi Base64 dan sebaliknya. Base64 adalah metode pengkodean (encoding), bukan enkripsi (encryption): tujuannya adalah memastikan data biner dapat ditransmisikan melalui protokol teks, bukan untuk menyembunyikan data.
+
+Alat ini berjalan sepenuhnya di browser Anda. Kami menggunakan `TextEncoder` dan `TextDecoder` agar pengkodean UTF-8 tetap akurat, termasuk untuk karakter non-ASCII seperti huruf Arab, aksara Asia, atau emoji. Anda juga dapat beralih ke mode URL-safe Base64 yang mengganti karakter `+` dan `/` dengan `-` dan `_`, serta menghapus padding `=`.
+
+<Warning>
+  Base64 adalah encoding, bukan encryption. Data yang di-encode Base64 dapat dibaca siapa saja yang memiliki decoder. Jangan gunakan Base64 untuk menyembunyikan informasi sensitif.
+</Warning>
+
+<Base64Tool />
+
+## Cara menggunakan
+
+<Steps>
+  <Step title="Pilih mode">
+    Pilih Encode untuk mengubah teks menjadi Base64, atau Decode untuk mengembalikan Base64 ke teks asli.
+  </Step>
+  <Step title="Masukkan data">
+    Ketik atau tempel teks ke area input. Saat mode Encode, masukkan teks biasa. Saat mode Decode, masukkan string Base64 yang valid.
+  </Step>
+  <Step title="Aktifkan URL-safe (opsional)">
+    Centang URL-safe jika Anda ingin hasil Encode menggunakan karakter `-` dan `_` tanpa padding `=`. Saat Decode, alat ini akan otomatis menyesuaikan padding jika diperlukan.
+  </Step>
+  <Step title="Gunakan Swap atau Copy">
+    Tekan Swap untuk memindahkan hasil ke input dan mengganti mode. Tekan Copy untuk menyalin hasil ke clipboard.
+  </Step>
+</Steps>
+
+## FAQ
+
+<AccordionGroup>
+  <Accordion title="Apakah Base64 sama dengan enkripsi?">
+    Tidak. Base64 adalah encoding, bukan encryption. Tujuannya adalah mengubah data biner menjadi teks agar bisa dikirim melalui saluran teks. Siapa pun dapat mendecode Base64 tanpa kunci.
+  </Accordion>
+
+  <Accordion title="Mengapa karakter non-ASCII menjadi rusak saat decode?">
+    Beberapa decoder menggunakan Latin-1, bukan UTF-8. Alat AWDEV menggunakan TextDecoder dengan UTF-8 dan fatal:true, sehingga karakter non-ASCII seperti huruf Arab atau emoji dipertahankan dengan benar.
+  </Accordion>
+
+  <Accordion title="Apa bedanya Base64 standar dan URL-safe?">
+    Base64 standar menggunakan `+`, `/`, dan padding `=`. URL-safe mengganti `+` dengan `-`, `/` dengan `_`, dan menghapus padding agar aman digunakan di URL.
+  </Accordion>
+
+  <Accordion title="Apakah data saya dikirim ke server?">
+    Tidak. Semua proses encode dan decode terjadi di browser Anda. Tidak ada data yang dikirim ke server AWDEV.
+  </Accordion>
+</AccordionGroup>
+
+## Lihat alat lainnya
+
+Jelajahi lebih banyak alat pengembangan web di [Direktori Alat Web](/web-tools/index).
+
+## Bagikan
+
+Bagikan halaman ini: [X](https://twitter.com/intent/tweet?url=https%3A%2F%2Fawdev-347a591f.mintlify.app%2Fweb-tools%2Fbase64&amp;text=Base64%20Encoder%20%2F%20Decoder) · [Facebook](https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fawdev-347a591f.mintlify.app%2Fweb-tools%2Fbase64) · [WhatsApp](https://wa.me/?text=Base64%20Encoder%20%2F%20Decoder%20https%3A%2F%2Fawdev-347a591f.mintlify.app%2Fweb-tools%2Fbase64) · [LinkedIn](https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fawdev-347a591f.mintlify.app%2Fweb-tools%2Fbase64) · [Telegram](https://t.me/share/url?url=https%3A%2F%2Fawdev-347a591f.mintlify.app%2Fweb-tools%2Fbase64&amp;text=Base64%20Encoder%20%2F%20Decoder)
+
+export const Base64Tool = () => {
+  const [mode, setMode] = useState("encode");
+  const [input, setInput] = useState("");
+  const [output, setOutput] = useState("");
+  const [urlSafe, setUrlSafe] = useState(false);
+  const [error, setError] = useState("");
+  const [copied, setCopied] = useState(false);
+
+  const toBinaryString = (bytes) => {
+    let bin = "";
+    for (let i = 0; i < bytes.length; i++) {
+      bin += String.fromCharCode(bytes[i]);
+    }
+    return bin;
+  };
+
+  const fromBinaryString = (bin) => {
+    const bytes = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) {
+      bytes[i] = bin.charCodeAt(i);
+    }
+    return bytes;
+  };
+
+  const encode = (text, safe) => {
+    const bytes = new TextEncoder().encode(text);
+    let b64 = btoa(toBinaryString(bytes));
+    if (safe) {
+      b64 = b64.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/g, "");
+    }
+    return b64;
+  };
+
+  const decode = (b64, safe) => {
+    let s = b64;
+    if (safe) {
+      s = s.replace(/-/g, "+").replace(/_/g, "/");
+      const pad = s.length % 4;
+      if (pad === 2) s += "==";
+      else if (pad === 3) s += "=";
+      else if (pad === 1) throw new Error("Invalid Base64 length");
+    }
+    const bin = atob(s);
+    const bytes = fromBinaryString(bin);
+    const decoded = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+    return decoded;
+  };
+
+  const process = () => {
+    setError("");
+    if (!input) {
+      setOutput("");
+      return;
+    }
+    try {
+      if (mode === "encode") {
+        setOutput(encode(input, urlSafe));
+      } else {
+        setOutput(decode(input, urlSafe));
+      }
+    } catch (e) {
+      setError("Input tidak valid: " + (e.message || "Terjadi kesalahan"));
+      setOutput("");
+    }
+  };
+
+  useEffect(() => {
+    process();
+  }, [input, mode, urlSafe]);
+
+  const handleSwap = () => {
+    setInput(output);
+    setMode(mode === "encode" ? "decode" : "encode");
+  };
+
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(output);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch (e) {}
+  };
+
+  return (
+    <div className="not-prose" style={{ display: "flex", flexDirection: "column", gap: 16 }}>
+      <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+        <button type="button" onClick={() => setMode("encode")} style={{ padding: "8px 14px", borderRadius: 8, border: "1px solid rgba(127,127,127,.35)", background: mode === "encode" ? "#315c45" : "transparent", color: mode === "encode" ? "#fff" : "inherit", cursor: "pointer" }}>
+          Encode
+        </button>
+        <button type="button" onClick={() => setMode("decode")} style={{ padding: "8px 14px", borderRadius: 8, border: "1px solid rgba(127,127,127,.35)", background: mode === "decode" ? "#315c45" : "transparent", color: mode === "decode" ? "#fff" : "inherit", cursor: "pointer" }}>
+          Decode
+        </button>
+        <label style={{ display: "flex", alignItems: "center", gap: 8, cursor: "pointer", marginLeft: "auto" }}>
+          <input type="checkbox" checked={urlSafe} onChange={(e) => setUrlSafe(e.target.checked)} />
+          URL-safe
+        </label>
+      </div>
+
+      <label style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+        <span style={{ fontWeight: 700 }}>{mode === "encode" ? "Teks asli" : "Base64"}</span>
+        <textarea
+          rows={6}
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          placeholder={mode === "encode" ? "Masukkan teks di sini..." : "Masukkan Base64 di sini..."}
+          style={{ background: "transparent", color: "inherit", border: "1px solid rgba(127,127,127,.35)", borderRadius: 8, padding: 12, width: "100%", font: "inherit" }}
+        />
+      </label>
+
+      <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+        <button type="button" onClick={handleSwap} style={{ padding: "8px 14px", borderRadius: 8, border: "1px solid rgba(127,127,127,.35)", background: "transparent", color: "inherit", cursor: "pointer" }}>
+          Swap
+        </button>
+        <button type="button" onClick={handleCopy} style={{ padding: "8px 14px", borderRadius: 8, border: "1px solid rgba(127,127,127,.35)", background: "transparent", color: "inherit", cursor: "pointer" }}>
+          {copied ? "Copied!" : "Copy"}
+        </button>
+      </div>
+
+      <label style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+        <span style={{ fontWeight: 700 }}>Hasil</span>
+        <textarea
+          rows={6}
+          readOnly
+          value={output}
+          placeholder="Hasil akan muncul di sini..."
+          style={{ background: "transparent", color: "inherit", border: "1px solid rgba(127,127,127,.35)", borderRadius: 8, padding: 12, width: "100%", font: "inherit", fontFamily: "monospace" }}
+        />
+      </label>
+
+      {error && (
+        <div style={{ color: "#dc2626", padding: 10, border: "1px solid rgba(220,38,38,.35)", borderRadius: 8 }}>
+          {error}
+        </div>
+      )}
+    </div>
+  );
+};

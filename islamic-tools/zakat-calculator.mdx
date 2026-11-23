@@ -1,0 +1,245 @@
+---
+title: "Zakat al-Mal Calculator"
+sidebarTitle: "Zakat Calculator"
+description: "Hitung kewajiban zakat mal (2,5%) dengan kalkulator interaktif AWDEV. Masukkan harta, nisab, dan utang untuk mengetahui apakah zakat wajib."
+keywords:
+  - "zakat calculator"
+  - "kalkulator zakat"
+  - "zakat mal"
+  - "nisab"
+  - "haul"
+  - "zakat 2.5%"
+  - "islamic tools"
+---
+
+Kalkulator Zakat al-Mal membantu Anda menghitung kewajiban zakat harta dengan cepat dan praktis. Zakat mal adalah zakat atas harta yang telah dimiliki selama satu tahun hijriyah (haul) dan telah mencapai batas minimum (nisab). Tarif zakat mal yang umum diterapkan adalah 2,5% dari harta bersih yang zakatable.
+
+Nisab zakat mal umumnya ditetapkan berdasarkan harga 85 gram emas, meskipun sebagian lembaga juga menggunakan patokan 595 gram perak. Pastikan untuk memeriksa harga emas atau perak hari ini agar perhitungan nisab sesuai kondisi pasar terkini.
+
+<ZakatCalculator />
+
+<Note>
+  Kalkulator ini adalah alat bantu. Untuk kepastian hukum dan jumlah zakat yang tepat, silakan konfirmasi kepada ulama atau lembaga zakat resmi, seperti BAZNAS, di wilayah Anda.
+</Note>
+
+## Cara menggunakan
+
+<Steps>
+  <Step title="Pilih mata uang dan dasar nisab">
+    Masukkan label mata uang (default: Rp) dan pilih dasar nisab: Emas 85 g atau Perak 595 g. Jika memilih perak, masukkan juga harga perak per gram.
+  </Step>
+  <Step title="Masukkan harga emas per gram">
+    Isi harga emas per gram sesuai harga pasar hari ini. Nilai ini menentukan besaran nisab.
+  </Step>
+  <Step title="Isi rincian harta">
+    Masukkan nominal kas dan tabungan, nilai emas/perak, investasi dan saham, persediaan bisnis dan piutang, serta aset lainnya.
+  </Step>
+  <Step title="Kurangi utang jangka pendek">
+    Masukkan total utang yang jatuh tempo dalam waktu dekat untuk mendapatkan harta bersih.
+  </Step>
+  <Step title="Centang haul dan baca hasil">
+    Pastikan kotak "Harta sudah dimiliki selama 1 haul" dicentang jika telah memenuhi syarat. Hasil akan menampilkan status wajib zakat dan jumlah yang harus dikeluarkan.
+  </Step>
+</Steps>
+
+## Pertanyaan umum
+
+<AccordionGroup>
+  <Accordion title="Apa itu haul dalam zakat mal?">
+    Haul adalah masa satu tahun hijriyah (354 hari) yang menjadi syarat kepemilikan harta agar zakat wajib dikeluarkan. Jika harta belum genap satu tahun, maka zakat belum wajib.
+  </Accordion>
+
+  <Accordion title="Berapa tarif zakat mal?">
+    Tarif zakat mal yang umum diterapkan adalah 2,5% dari harta bersih yang telah mencapai nisab dan melewati haul.
+  </Accordion>
+
+  <Accordion title="Apa saja yang termasuk harta zakatable?">
+    Umumnya meliputi uang tunai, tabungan, emas dan perak, saham dan investasi, piutang yang diyakini bisa ditagih, serta barang dagangan. Harta pribadi seperti rumah tinggal, kendaraan sehari-hari, dan peralatan kerja biasanya tidak dihitung.
+  </Accordion>
+
+  <Accordion title="Apakah utang mengurangi harta zakat?">
+    Ya, utang jangka pendek yang jatuh tempo dapat mengurangi harta kena zakat. Masukkan total utang yang harus dibayar dalam waktu dekat pada kolom pengurangan.
+  </Accordion>
+</AccordionGroup>
+
+## Lihat juga
+
+- [Katalog Islamic Tools](/islamic-tools/index)
+- [Zakat al-Fitr Calculator](/islamic-tools/zakat-al-fitr-calculator) (Segera hadir)
+- [Income / Professional Zakat Calculator](/islamic-tools/income-zakat-calculator) (Segera hadir)
+
+## Bagikan
+
+[X](https://twitter.com/intent/tweet?url=https%3A%2F%2Fawdev-347a591f.mintlify.app%2Fislamic-tools%2Fzakat-calculator&amp;text=Hitung%20zakat%20mal%20dengan%20kalkulator%20interaktif%20AWDEV) · [Facebook](https://www.facebook.com/sharer/sharer.php?u=https%3A%2F%2Fawdev-347a591f.mintlify.app%2Fislamic-tools%2Fzakat-calculator) · [WhatsApp](https://wa.me/?text=Hitung%20zakat%20mal%20dengan%20kalkulator%20interaktif%20AWDEV%20https%3A%2F%2Fawdev-347a591f.mintlify.app%2Fislamic-tools%2Fzakat-calculator) · [LinkedIn](https://www.linkedin.com/sharing/share-offsite/?url=https%3A%2F%2Fawdev-347a591f.mintlify.app%2Fislamic-tools%2Fzakat-calculator) · [Telegram](https://t.me/share/url?url=https%3A%2F%2Fawdev-347a591f.mintlify.app%2Fislamic-tools%2Fzakat-calculator&amp;text=Hitung%20zakat%20mal%20dengan%20kalkulator%20interaktif%20AWDEV)
+
+export const ZakatCalculator = () => {
+  const [currency, setCurrency] = useState('Rp');
+  const [goldPrice, setGoldPrice] = useState('');
+  const [silverPrice, setSilverPrice] = useState('');
+  const [nisabBasis, setNisabBasis] = useState('gold');
+  const [cash, setCash] = useState('');
+  const [goldSilverValue, setGoldSilverValue] = useState('');
+  const [investments, setInvestments] = useState('');
+  const [businessAssets, setBusinessAssets] = useState('');
+  const [otherAssets, setOtherAssets] = useState('');
+  const [debts, setDebts] = useState('');
+  const [haulChecked, setHaulChecked] = useState(false);
+  const [copied, setCopied] = useState(false);
+
+  const toNum = (v) => {
+    const n = Number(String(v).replace(/[^0-9]/g, ''));
+    return isNaN(n) ? 0 : n;
+  };
+
+  const fmt = (n) => {
+    if (n === 0) return '0';
+    return n.toLocaleString('id-ID');
+  };
+
+  const totalWealth = toNum(cash) + toNum(goldSilverValue) + toNum(investments) + toNum(businessAssets) + toNum(otherAssets);
+  const netWealth = Math.max(0, totalWealth - toNum(debts));
+  const nisabValue = nisabBasis === 'gold' ? toNum(goldPrice) * 85 : toNum(silverPrice) * 595;
+  const meetsNisab = netWealth >= nisabValue && nisabValue > 0;
+  const zakatDue = meetsNisab && haulChecked ? Math.round(netWealth * 0.025) : 0;
+
+  const inputStyle = {
+    background: 'transparent',
+    color: 'inherit',
+    border: '1px solid rgba(127,127,127,.35)',
+    borderRadius: 8,
+    padding: 8,
+    width: '100%',
+    font: 'inherit',
+  };
+
+  const labelStyle = {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 4,
+    fontSize: 14,
+  };
+
+  const rowStyle = {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+    gap: 12,
+  };
+
+  const blockStyle = {
+    border: '1px solid rgba(127,127,127,.25)',
+    borderRadius: 12,
+    padding: 16,
+    display: 'grid',
+    gap: 12,
+  };
+
+  const handleCopy = async () => {
+    try {
+      const text = `Zakat al-Mal\nMata uang: ${currency}\nTotal harta: ${currency} ${fmt(totalWealth)}\nHarta bersih: ${currency} ${fmt(netWealth)}\nNisab: ${currency} ${fmt(nisabValue)}\nStatus: ${meetsNisab && haulChecked ? 'Wajib zakat' : 'Belum wajib zakat'}\nZakat yang harus dikeluarkan: ${currency} ${fmt(zakatDue)}`;
+      await navigator.clipboard.writeText(text);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (e) {}
+  };
+
+  return (
+    <div className="not-prose" style={{ display: 'grid', gap: 16 }}>
+      <div style={blockStyle}>
+        <div style={{ fontWeight: 600, fontSize: 16 }}>Pengaturan Nisab</div>
+        <div style={rowStyle}>
+          <label style={labelStyle}>
+            Label mata uang
+            <input type="text" value={currency} onChange={(e) => setCurrency(e.target.value)} style={inputStyle} />
+          </label>
+          <label style={labelStyle}>
+            Harga emas per gram ({currency})
+            <input type="text" inputMode="numeric" value={goldPrice} onChange={(e) => setNisabBasis('gold') || setGoldPrice(e.target.value)} style={inputStyle} placeholder="Masukkan harga emas hari ini" />
+          </label>
+          <label style={labelStyle}>
+            Dasar nisab
+            <select value={nisabBasis} onChange={(e) => setNisabBasis(e.target.value)} style={inputStyle}>
+              <option value="gold">Emas 85 g</option>
+              <option value="silver">Perak 595 g</option>
+            </select>
+          </label>
+          {nisabBasis === 'silver' && (
+            <label style={labelStyle}>
+              Harga perak per gram ({currency})
+              <input type="text" inputMode="numeric" value={silverPrice} onChange={(e) => setSilverPrice(e.target.value)} style={inputStyle} placeholder="Masukkan harga perak hari ini" />
+            </label>
+          )}
+        </div>
+      </div>
+
+      <div style={blockStyle}>
+        <div style={{ fontWeight: 600, fontSize: 16 }}>Rincian Harta</div>
+        <div style={rowStyle}>
+          <label style={labelStyle}>
+            Kas dan tabungan
+            <input type="text" inputMode="numeric" value={cash} onChange={(e) => setCash(e.target.value)} style={inputStyle} placeholder="0" />
+          </label>
+          <label style={labelStyle}>
+            Nilai emas / perak
+            <input type="text" inputMode="numeric" value={goldSilverValue} onChange={(e) => setGoldSilverValue(e.target.value)} style={inputStyle} placeholder="0" />
+          </label>
+          <label style={labelStyle}>
+            Investasi dan saham
+            <input type="text" inputMode="numeric" value={investments} onChange={(e) => setInvestments(e.target.value)} style={inputStyle} placeholder="0" />
+          </label>
+          <label style={labelStyle}>
+            Persediaan bisnis dan piutang
+            <input type="text" inputMode="numeric" value={businessAssets} onChange={(e) => setBusinessAssets(e.target.value)} style={inputStyle} placeholder="0" />
+          </label>
+          <label style={labelStyle}>
+            Aset lainnya
+            <input type="text" inputMode="numeric" value={otherAssets} onChange={(e) => setOtherAssets(e.target.value)} style={inputStyle} placeholder="0" />
+          </label>
+          <label style={labelStyle}>
+            Utang jangka pendek (pengurangan)
+            <input type="text" inputMode="numeric" value={debts} onChange={(e) => setDebts(e.target.value)} style={inputStyle} placeholder="0" />
+          </label>
+        </div>
+      </div>
+
+      <div style={blockStyle}>
+        <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 14, cursor: 'pointer' }}>
+          <input type="checkbox" checked={haulChecked} onChange={(e) => setHaulChecked(e.target.checked)} style={{ width: 18, height: 18, accentColor: '#315c45' }} />
+          Harta sudah dimiliki selama 1 haul (satu tahun hijriyah)
+        </label>
+      </div>
+
+      <div style={{ ...blockStyle, background: 'rgba(49,92,69,0.06)' }}>
+        <div style={{ fontWeight: 600, fontSize: 16 }}>Hasil Perhitungan</div>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(180px, 1fr))', gap: 10 }}>
+          <div style={{ border: '1px solid rgba(127,127,127,.25)', borderRadius: 10, padding: 12 }}>
+            <div style={{ fontSize: 12, opacity: 0.7 }}>Total harta</div>
+            <div style={{ fontWeight: 700, fontSize: 18 }}>{currency} {fmt(totalWealth)}</div>
+          </div>
+          <div style={{ border: '1px solid rgba(127,127,127,.25)', borderRadius: 10, padding: 12 }}>
+            <div style={{ fontSize: 12, opacity: 0.7 }}>Harta bersih</div>
+            <div style={{ fontWeight: 700, fontSize: 18 }}>{currency} {fmt(netWealth)}</div>
+          </div>
+          <div style={{ border: '1px solid rgba(127,127,127,.25)', borderRadius: 10, padding: 12 }}>
+            <div style={{ fontSize: 12, opacity: 0.7 }}>Nisab ({nisabBasis === 'gold' ? 'Emas 85g' : 'Perak 595g'})</div>
+            <div style={{ fontWeight: 700, fontSize: 18 }}>{currency} {fmt(nisabValue)}</div>
+          </div>
+          <div style={{ border: '1px solid rgba(127,127,127,.25)', borderRadius: 10, padding: 12 }}>
+            <div style={{ fontSize: 12, opacity: 0.7 }}>Status</div>
+            <div style={{ fontWeight: 700, fontSize: 18, color: meetsNisab && haulChecked ? '#315c45' : 'inherit' }}>
+              {meetsNisab && haulChecked ? 'Wajib zakat' : 'Belum wajib zakat'}
+            </div>
+          </div>
+          <div style={{ border: '2px solid #315c45', borderRadius: 10, padding: 12, background: 'rgba(49,92,69,0.08)' }}>
+            <div style={{ fontSize: 12, opacity: 0.7 }}>Zakat yang harus dikeluarkan (2,5%)</div>
+            <div style={{ fontWeight: 700, fontSize: 22, color: '#315c45' }}>{currency} {fmt(zakatDue)}</div>
+          </div>
+        </div>
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          <button type="button" onClick={handleCopy} style={{ ...inputStyle, width: 'auto', cursor: 'pointer', padding: '8px 14px', fontWeight: 600 }}>
+            {copied ? 'Tersalin!' : 'Salin hasil'}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};

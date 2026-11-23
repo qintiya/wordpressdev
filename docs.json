@@ -1,6 +1,6 @@
 {
   "$schema": "https://mintlify.com/docs.json",
-  "name": "WordPressDev",
+  "name": "AWDEV",
   "theme": "mint",
   "colors": {
     "primary": "#315c45",
@@ -9,15 +9,215 @@
   },
   "favicon": "/favicon.svg",
   "navigation": {
-    "groups": [
+    "tabs": [
       {
-        "group": "Getting started",
-        "pages": ["index", "deployment"]
+        "tab": "Home",
+        "icon": "house",
+        "groups": [
+          {
+            "group": "AWDEV",
+            "pages": [
+              "index",
+              "tools",
+              "about",
+              "contact"
+            ]
+          },
+          {
+            "group": "Legal",
+            "pages": [
+              "privacy-policy",
+              "terms"
+            ]
+          }
+        ]
       },
       {
-        "group": "Headless frontends",
-        "pages": ["frontends", "cloud-integrations", "google-adsense"]
+        "tab": "Web Tools",
+        "icon": "code",
+        "groups": [
+          {
+            "group": "Web Tools",
+            "pages": [
+              "web-tools/index"
+            ]
+          },
+          {
+            "group": "Live demos",
+            "pages": [
+              "web-tools/word-counter",
+              "web-tools/password-generator",
+              "web-tools/base64"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Islamic Tools",
+        "icon": "moon",
+        "groups": [
+          {
+            "group": "Islamic Tools",
+            "pages": [
+              "islamic-tools/index"
+            ]
+          },
+          {
+            "group": "Live demos",
+            "pages": [
+              "islamic-tools/zakat-calculator",
+              "islamic-tools/tasbih"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Learn",
+        "icon": "graduation-cap",
+        "groups": [
+          {
+            "group": "Learn",
+            "pages": [
+              "learn/categories",
+              "learn/modern-web-development-guide"
+            ]
+          }
+        ]
+      },
+      {
+        "tab": "Developer Docs",
+        "icon": "book",
+        "groups": [
+          {
+            "group": "Getting started",
+            "pages": [
+              "platform-overview",
+              "deployment"
+            ]
+          },
+          {
+            "group": "Headless frontends",
+            "pages": [
+              "frontends",
+              "cloud-integrations",
+              "google-adsense"
+            ]
+          }
+        ]
       }
     ]
+  },
+  "appearance": {
+    "default": "system"
+  },
+  "navbar": {
+    "links": [
+      {
+        "href": "https://awdev-347a591f.mintlify.app/about",
+        "label": "About"
+      },
+      {
+        "href": "https://awdev-347a591f.mintlify.app/contact",
+        "label": "Contact"
+      }
+    ],
+    "primary": {
+      "type": "github",
+      "href": "https://github.com/qintiya/wordpressdev"
+    }
+  },
+  "footer": {
+    "socials": {
+      "github": "https://github.com/qintiya/wordpressdev",
+      "website": "https://awdev.eu.org"
+    },
+    "links": [
+      {
+        "header": "Tools",
+        "items": [
+          {
+            "label": "Tools Directory",
+            "href": "https://awdev-347a591f.mintlify.app/tools"
+          },
+          {
+            "label": "Web Tools",
+            "href": "https://awdev-347a591f.mintlify.app/web-tools/index"
+          },
+          {
+            "label": "Islamic Tools",
+            "href": "https://awdev-347a591f.mintlify.app/islamic-tools/index"
+          }
+        ]
+      },
+      {
+        "header": "Popular",
+        "items": [
+          {
+            "label": "Word Counter",
+            "href": "https://awdev-347a591f.mintlify.app/web-tools/word-counter"
+          },
+          {
+            "label": "Password Generator",
+            "href": "https://awdev-347a591f.mintlify.app/web-tools/password-generator"
+          },
+          {
+            "label": "Zakat Calculator",
+            "href": "https://awdev-347a591f.mintlify.app/islamic-tools/zakat-calculator"
+          }
+        ]
+      },
+      {
+        "header": "Learn",
+        "items": [
+          {
+            "label": "Categories",
+            "href": "https://awdev-347a591f.mintlify.app/learn/categories"
+          },
+          {
+            "label": "Web Development Guide",
+            "href": "https://awdev-347a591f.mintlify.app/learn/modern-web-development-guide"
+          },
+          {
+            "label": "Developer Docs",
+            "href": "https://awdev-347a591f.mintlify.app/platform-overview"
+          }
+        ]
+      },
+      {
+        "header": "AWDEV",
+        "items": [
+          {
+            "label": "About Us",
+            "href": "https://awdev-347a591f.mintlify.app/about"
+          },
+          {
+            "label": "Contact Us",
+            "href": "https://awdev-347a591f.mintlify.app/contact"
+          },
+          {
+            "label": "Privacy Policy",
+            "href": "https://awdev-347a591f.mintlify.app/privacy-policy"
+          },
+          {
+            "label": "Terms & Conditions",
+            "href": "https://awdev-347a591f.mintlify.app/terms"
+          }
+        ]
+      }
+    ]
+  },
+  "seo": {
+    "metatags": {
+      "og:site_name": "AWDEV",
+      "keywords": "web development, free online tools, developer tools, islamic tools, zakat calculator, prayer times, tech learning"
+    },
+    "indexing": "navigable"
+  },
+  "errors": {
+    "404": {
+      "redirect": false,
+      "title": "404: Halaman tidak ditemukan",
+      "description": "Halaman yang Anda cari tidak ada atau sudah dipindahkan. [Kembali ke Beranda](/) atau buka [Tools Directory](/tools)."
+    }
   }
 }
