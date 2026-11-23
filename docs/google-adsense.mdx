@@ -1,0 +1,22 @@
+---
+title: Google verification and ads
+ description: Google AdSense and Tag Manager setup
+---
+
+The frontend layout includes the provided Google site-verification meta value, AdSense publisher meta tag, AdSense loader, and Google Tag Manager container ID. The WordPressDev Default theme adds the same meta tags and external scripts to theme-rendered pages.
+
+## Site verification
+
+The file `frontend/public/googled2bd44ef72717048.html` is copied to the Next.js public root and should be available at `https://<frontend-domain>/googled2bd44ef72717048.html` after deployment. The verification meta tag is also emitted by the frontend layout and the custom WordPress theme. Verify each hostname separately in Search Console if requested.
+
+## AdSense ad units
+
+The AdSense library is loaded globally. The AMP Auto Ads script (`amp-auto-ads`) is intentionally not added: it is only for AMP documents, and this project is not configured as an AMP site. For automatic ads on regular pages, enable Auto ads for the site in the AdSense account.
+
+The four `<ins class="adsbygoogle">` examples are ad placements, not global scripts. Add a placement only where an ad is intended, using the matching publisher and slot IDs. Do not copy the AdSense loader multiple times on one page. Ad serving depends on account approval, site review, consent requirements, and Google's policies; adding code does not guarantee ads will show.
+
+## Tag Manager and consent
+
+GTM container `GTM-PMLF34B9` is loaded on all pages through the frontend layout and the default WordPress theme. Configure tags and consent settings in the Tag Manager account. Depending on visitor location and your use of tracking/advertising technologies, configure a suitable consent-management platform and block non-essential tags until the required consent is granted. Follow applicable privacy laws and Google publisher policies.
+
+The custom theme applies only when activated and used to render a page. The WordPress verification HTML file is not included because WordPress runs on a separate hostname; use the meta verification there or add the requested file to the CMS host's document root if Google specifically requires file verification for that domain.

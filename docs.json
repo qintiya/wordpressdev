@@ -16,7 +16,7 @@
       },
       {
         "group": "Headless frontends",
-        "pages": ["frontends", "cloud-integrations"]
+        "pages": ["frontends", "cloud-integrations", "google-adsense"]
       }
     ]
   }
